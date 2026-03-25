@@ -44,15 +44,15 @@ export default function ChatInput({ dark }) {
         </svg>
       </div>
 
-      {/* Mic button */}
+      {/* Send button */}
       <button
         className="flex-shrink-0 flex items-center justify-center rounded-full"
         style={{ width: '40px', height: '40px', background: '#00A884' }}
       >
-        <svg width="17" height="22" viewBox="0 0 17 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-          <rect x="4.5" y="1" width="8" height="14" rx="4"/>
-          <path d="M1 10v2a7.5 7.5 0 0015 0v-2M8.5 19v4"/>
-          <line x1="5.5" y1="23" x2="11.5" y2="23"/>
+        {/* Paper-plane send icon */}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
     </div>

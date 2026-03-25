@@ -1,25 +1,29 @@
 import { stringToColor, getInitials } from '../utils/text'
 
 function VerifiedBadge() {
-  // Exactly 12-spike starburst: outer R=19, inner r=13, center (20,20)
-  // 24 alternating vertices computed at 30° (outer) and 15° offset (inner)
-  const pts = [
-    "20,1",       "23.4,7.4",
-    "29.5,3.6",   "29.2,10.8",
-    "36.5,10.5",  "32.6,16.6",
-    "39,20",      "32.6,23.4",
-    "36.5,29.5",  "29.2,29.2",
-    "29.5,36.5",  "23.4,32.6",
-    "20,39",      "16.6,32.6",
-    "10.5,36.5",  "10.8,29.2",
-    "3.5,29.5",   "7.4,23.4",
-    "1,20",       "7.4,16.6",
-    "3.5,10.5",   "10.8,10.8",
-    "10.5,3.6",   "16.6,7.4",
+  // 12-spike starburst with rounded tips.
+  // Outer spikes become quadratic-bezier control points → never sharp.
+  // Inner concave notches stay as line endpoints → crisp valleys.
+  // Path: M inner[last] → Q outer[i] inner[i] × 12 → Z
+  const d = [
+    "M 16.6,7.4",
+    "Q 20,1     23.4,7.4",
+    "Q 29.5,3.6  29.2,10.8",
+    "Q 36.5,10.5 32.6,16.6",
+    "Q 39,20    32.6,23.4",
+    "Q 36.5,29.5 29.2,29.2",
+    "Q 29.5,36.5 23.4,32.6",
+    "Q 20,39    16.6,32.6",
+    "Q 10.5,36.5 10.8,29.2",
+    "Q 3.5,29.5  7.4,23.4",
+    "Q 1,20     7.4,16.6",
+    "Q 3.5,10.5  10.8,10.8",
+    "Q 10.5,3.6  16.6,7.4",
+    "Z",
   ].join(" ")
   return (
     <svg width="15" height="15" viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
-      <polygon points={pts} fill="#1877F2" />
+      <path d={d} fill="#1877F2" />
       <polyline
         points="12,21 17.5,26.5 29,13.5"
         stroke="white"
