@@ -1,11 +1,23 @@
 import { useState, useRef } from 'react'
+import {
+  ChatCircleText, Image, SquaresFour, ToggleLeft, Link,
+  Minus, BellRinging, Trash, ArrowUp, ArrowDown, X,
+  UploadSimple,
+} from '@phosphor-icons/react'
 
-const TYPE_ICONS = {
-  text: '💬', image: '🖼️', carousel: '🛍️', buttons: '🔘', cta: '🔗', separator: '—', unread: '🔴',
+const TYPE_ICON_EL = {
+  text:      <ChatCircleText size={14} weight="fill" color="#60A5FA" />,
+  image:     <Image size={14} weight="fill" color="#A78BFA" />,
+  carousel:  <SquaresFour size={14} weight="fill" color="#34D399" />,
+  buttons:   <ToggleLeft size={14} weight="fill" color="#FBBF24" />,
+  cta:       <Link size={14} weight="bold" color="#F472B6" />,
+  separator: <Minus size={14} weight="bold" color="#9CA3AF" />,
+  unread:    <BellRinging size={14} weight="fill" color="#F87171" />,
 }
 
 const TYPE_LABELS = {
-  text: 'Texto', image: 'Imagem', carousel: 'Carrossel', buttons: 'Botões', cta: 'Botão Link', separator: 'Separador', unread: 'Não lidas',
+  text: 'Texto', image: 'Imagem', carousel: 'Carrossel', buttons: 'Botões',
+  cta: 'Btn Link', separator: 'Separador', unread: 'Não lidas',
 }
 
 const ADDABLE_TYPES = ['text', 'image', 'carousel', 'buttons', 'cta', 'separator', 'unread']
@@ -71,9 +83,7 @@ function ImageUploadBox({ src, onUpload, onRemove, height = 80 }) {
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
           }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-          </svg>
+          <UploadSimple size={18} />
           <span>Enviar imagem</span>
         </button>
       )}
@@ -188,7 +198,7 @@ function CarouselEditor({ msg, onChange }) {
         <div key={i} style={{ background: '#1C1C1E', borderRadius: '8px', padding: '8px', border: '1px solid #3C3C3E' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
             <span style={{ color: '#9CA3AF', fontSize: '10.5px', fontWeight: '600' }}>Card {i + 1}</span>
-            <SmallBtn onClick={() => removeCard(i)} color="#EF4444">✕</SmallBtn>
+            <SmallBtn onClick={() => removeCard(i)} color="#EF4444"><X size={12} weight="bold" /></SmallBtn>
           </div>
 
           {/* Image upload */}
@@ -256,7 +266,7 @@ function ButtonsEditor({ msg, onChange }) {
       {buttons.map((btn, i) => (
         <div key={i} style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           <input value={btn.text || btn.label || ''} onChange={e => updateBtn(i, e.target.value)} style={{ ...inputStyle, flex: 1 }} placeholder={`Botão ${i + 1}`} />
-          <SmallBtn onClick={() => removeBtn(i)} color="#EF4444">✕</SmallBtn>
+          <SmallBtn onClick={() => removeBtn(i)} color="#EF4444"><X size={12} weight="bold" /></SmallBtn>
         </div>
       ))}
       <button onClick={addBtn}
@@ -423,16 +433,18 @@ export default function MessageEditor({ messages, onChange }) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 8px 8px 10px', cursor: 'pointer' }}
               onClick={() => toggle(msg.id)}>
-              <span style={{ fontSize: '14px', flexShrink: 0 }}>{TYPE_ICONS[msg.type] || '?'}</span>
+              <span style={{ flexShrink: 0, display: 'flex' }}>{TYPE_ICON_EL[msg.type] || <Minus size={14} />}</span>
               <span style={{ color: '#E9EDEF', fontSize: '11px', fontWeight: '600', flexShrink: 0, width: '56px' }}>{TYPE_LABELS[msg.type]}</span>
               <MsgPreviewText msg={msg} />
               <div style={{ display: 'flex', gap: '1px', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
-                <SmallBtn onClick={() => moveUp(i)} color={i === 0 ? '#3C3C3E' : '#9CA3AF'}>↑</SmallBtn>
-                <SmallBtn onClick={() => moveDown(i)} color={i === messages.length - 1 ? '#3C3C3E' : '#9CA3AF'}>↓</SmallBtn>
-                <SmallBtn onClick={() => deleteMsg(msg.id)} color="#EF4444">🗑</SmallBtn>
+                <SmallBtn onClick={() => moveUp(i)} color={i === 0 ? '#3C3C3E' : '#9CA3AF'}><ArrowUp size={13} /></SmallBtn>
+                <SmallBtn onClick={() => moveDown(i)} color={i === messages.length - 1 ? '#3C3C3E' : '#9CA3AF'}><ArrowDown size={13} /></SmallBtn>
+                <SmallBtn onClick={() => deleteMsg(msg.id)} color="#EF4444"><Trash size={13} /></SmallBtn>
               </div>
-              <span style={{ color: expanded ? '#25D366' : '#6B7280', fontSize: '11px', flexShrink: 0 }}>
-                {expanded ? '▾' : '▸'}
+              <span style={{ color: expanded ? '#25D366' : '#6B7280', flexShrink: 0, display: 'flex' }}>
+                {expanded
+                  ? <ArrowDown size={12} weight="bold" />
+                  : <ArrowDown size={12} weight="bold" style={{ transform: 'rotate(-90deg)' }} />}
               </span>
             </div>
             {expanded && (
@@ -456,7 +468,7 @@ export default function MessageEditor({ messages, onChange }) {
                 background: '#1C1C1E', color: '#E9EDEF', border: '1px solid #3C3C3E',
                 borderRadius: '7px', padding: '7px 9px', cursor: 'pointer', fontSize: '12px',
               }}>
-                <span>{TYPE_ICONS[t]}</span>
+                <span style={{ display: 'flex' }}>{TYPE_ICON_EL[t] || <Minus size={14} />}</span>
                 <span>{TYPE_LABELS[t]}</span>
               </button>
             ))}

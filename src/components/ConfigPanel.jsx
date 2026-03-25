@@ -1,13 +1,32 @@
 import { useRef, useState } from 'react'
+import {
+  SquaresFour, PencilSimple, BookmarkSimple,
+  Gear, Moon, Sun, SealCheck, Storefront, UploadSimple,
+  DownloadSimple, User, Tag, Percent, Package, Star,
+  ArrowCounterClockwise, Check,
+} from '@phosphor-icons/react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
 import MessageEditor from './MessageEditor'
 import CustomTemplatesTab from './CustomTemplatesTab'
 
-function Toggle({ label, checked, onChange }) {
+// Phosphor icon map for type IDs (replaces emoji)
+const TYPE_ICONS_PH = {
+  nps:        <Star size={17} weight="fill" color="#F59E0B" />,
+  carousel:   <SquaresFour size={17} weight="fill" color="#10B981" />,
+  reactivation: <ArrowCounterClockwise size={17} weight="bold" color="#8B5CF6" />,
+  promotion:  <Tag size={17} weight="fill" color="#EF4444" />,
+  repurchase: <Package size={17} weight="fill" color="#06B6D4" />,
+  launch:     <Star size={17} weight="duotone" color="#F97316" />,
+}
+
+function Toggle({ label, icon, checked, onChange }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0' }}>
-      <span style={{ color: '#F2F2F7', fontSize: '13px' }}>{label}</span>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#F2F2F7', fontSize: '13px' }}>
+        {icon}
+        {label}
+      </span>
       <button
         onClick={() => onChange(!checked)}
         style={{
@@ -27,10 +46,13 @@ function Toggle({ label, checked, onChange }) {
   )
 }
 
-function Field({ label, value, onChange, placeholder, type = 'text' }) {
+function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
   return (
     <div style={{ marginBottom: '8px' }}>
-      <label style={{ display: 'block', color: '#9CA3AF', fontSize: '11px', marginBottom: '4px' }}>{label}</label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#9CA3AF', fontSize: '11px', marginBottom: '4px' }}>
+        {icon}
+        {label}
+      </label>
       <input
         type={type}
         value={value}
@@ -67,7 +89,7 @@ export default function ConfigPanel({
   customTemplates, onSaveCustomTemplate, onLoadCustomTemplate, onDeleteCustomTemplate,
 }) {
   const fileRef = useRef()
-  const [tab, setTab] = useState('templates') // 'templates' | 'editor' | 'saved'
+  const [tab, setTab] = useState('templates')
   const [showSettings, setShowSettings] = useState(false)
 
   const handleLogoUpload = e => {
@@ -78,18 +100,21 @@ export default function ConfigPanel({
     reader.readAsDataURL(file)
   }
 
-  const tabBtn = (id, label) => (
+  const tabBtn = (id, icon, label, badge) => (
     <button
       onClick={() => setTab(id)}
       style={{
         flex: 1, height: '34px', border: 'none', cursor: 'pointer',
-        borderRadius: '8px', fontSize: '13px', fontWeight: '600',
+        borderRadius: '8px', fontSize: '11.5px', fontWeight: '600',
         background: tab === id ? '#2C2C2E' : 'transparent',
         color: tab === id ? '#F2F2F7' : '#6B7280',
         transition: 'all 0.15s',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
       }}
     >
+      {icon}
       {label}
+      {badge ? <span style={{ background: '#25D366', color: 'white', borderRadius: '9px', fontSize: '10px', padding: '0 5px', lineHeight: '16px' }}>{badge}</span> : null}
     </button>
   )
 
@@ -109,13 +134,10 @@ export default function ConfigPanel({
         </div>
         <button
           onClick={() => setShowSettings(s => !s)}
-          style={{ color: showSettings ? '#25D366' : '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+          style={{ color: showSettings ? '#25D366' : '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}
           title="Configurações"
         >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
-          </svg>
+          <Gear size={18} weight={showSettings ? 'fill' : 'regular'} />
         </button>
       </div>
 
@@ -136,9 +158,7 @@ export default function ConfigPanel({
               {brand.logo ? (
                 <img src={brand.logo} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                </svg>
+                <UploadSimple size={18} color="#6B7280" />
               )}
             </div>
             <div>
@@ -154,30 +174,35 @@ export default function ConfigPanel({
             <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
           </div>
 
-          <Field label="Nome da Marca" value={brand.name} onChange={v => onBrandChange({ ...brand, name: v })} placeholder="Ex: Glow Beauty" />
-          <Field label="Telefone" value={brand.phone || ''} onChange={v => onBrandChange({ ...brand, phone: v })} placeholder="+55 11 9999-9999" />
-          <Toggle label="Badge Verificado ✓" checked={!!brand.verified} onChange={v => onBrandChange({ ...brand, verified: v })} />
-          <Toggle label="Conta Comercial" checked={!!brand.isCommercial} onChange={v => onBrandChange({ ...brand, isCommercial: v })} />
+          <Field label="Nome da Marca" icon={<Storefront size={11} />} value={brand.name} onChange={v => onBrandChange({ ...brand, name: v })} placeholder="Ex: Glow Beauty" />
+          <Field label="Telefone" icon={<User size={11} />} value={brand.phone || ''} onChange={v => onBrandChange({ ...brand, phone: v })} placeholder="+55 11 9999-9999" />
+          <Toggle label="Badge Verificado" icon={<SealCheck size={14} color="#3B82F6" />} checked={!!brand.verified} onChange={v => onBrandChange({ ...brand, verified: v })} />
+          <Toggle label="Conta Comercial" icon={<Storefront size={14} color="#9CA3AF" />} checked={!!brand.isCommercial} onChange={v => onBrandChange({ ...brand, isCommercial: v })} />
 
           <div style={{ height: '1px', background: '#2C2C2E', margin: '10px 0' }} />
 
           <SectionLabel title="Variáveis de texto" />
-          <Field label="{nome}" value={vars.nome || ''} onChange={v => onVarsChange({ ...vars, nome: v })} placeholder="Nome do cliente" />
-          <Field label="{coupon}" value={vars.coupon || ''} onChange={v => onVarsChange({ ...vars, coupon: v })} placeholder="Código do cupom" />
-          <Field label="{discount}" value={vars.discount || ''} onChange={v => onVarsChange({ ...vars, discount: v })} placeholder="% de desconto" />
-          <Field label="{product}" value={vars.product || ''} onChange={v => onVarsChange({ ...vars, product: v })} placeholder="Nome do produto" />
-          <Field label="{fan_name}" value={vars.fan_name || ''} onChange={v => onVarsChange({ ...vars, fan_name: v })} placeholder="Nome do fã" />
+          <Field label="{nome}" icon={<User size={11} />} value={vars.nome || ''} onChange={v => onVarsChange({ ...vars, nome: v })} placeholder="Nome do cliente" />
+          <Field label="{coupon}" icon={<Tag size={11} />} value={vars.coupon || ''} onChange={v => onVarsChange({ ...vars, coupon: v })} placeholder="Código do cupom" />
+          <Field label="{discount}" icon={<Percent size={11} />} value={vars.discount || ''} onChange={v => onVarsChange({ ...vars, discount: v })} placeholder="% de desconto" />
+          <Field label="{product}" icon={<Package size={11} />} value={vars.product || ''} onChange={v => onVarsChange({ ...vars, product: v })} placeholder="Nome do produto" />
+          <Field label="{fan_name}" icon={<Star size={11} />} value={vars.fan_name || ''} onChange={v => onVarsChange({ ...vars, fan_name: v })} placeholder="Nome do fã" />
 
           <div style={{ height: '1px', background: '#2C2C2E', margin: '10px 0' }} />
-          <Toggle label="🌙 Modo Escuro" checked={dark} onChange={onDarkChange} />
+          <Toggle
+            label="Modo Escuro"
+            icon={dark ? <Moon size={14} weight="fill" color="#8B5CF6" /> : <Sun size={14} color="#F59E0B" />}
+            checked={dark}
+            onChange={onDarkChange}
+          />
         </div>
       )}
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', padding: '8px 12px', gap: '4px', background: '#141416', borderBottom: '1px solid #2C2C2E' }}>
-        {tabBtn('templates', '📋 Templates')}
-        {tabBtn('editor', '✏️ Editor')}
-        {tabBtn('saved', `⭐ Salvos${customTemplates?.length ? ` (${customTemplates.length})` : ''}`)}
+      <div style={{ display: 'flex', padding: '8px 10px', gap: '3px', background: '#141416', borderBottom: '1px solid #2C2C2E' }}>
+        {tabBtn('templates', <SquaresFour size={14} weight={tab === 'templates' ? 'fill' : 'regular'} />, 'Templates')}
+        {tabBtn('editor', <PencilSimple size={14} weight={tab === 'editor' ? 'fill' : 'regular'} />, 'Editor')}
+        {tabBtn('saved', <BookmarkSimple size={14} weight={tab === 'saved' ? 'fill' : 'regular'} />, 'Salvos', customTemplates?.length || null)}
       </div>
 
       {/* Tab content */}
@@ -198,12 +223,12 @@ export default function ConfigPanel({
                       style={{
                         display: 'flex', alignItems: 'center', gap: '7px',
                         padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
-                        border: active ? `1.5px solid #25D366` : '1.5px solid #2C2C2E',
+                        border: active ? '1.5px solid #25D366' : '1.5px solid #2C2C2E',
                         background: active ? '#1A3A22' : '#1C1C1E',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ fontSize: '16px', flexShrink: 0 }}>{seg.emoji}</span>
+                      <span style={{ fontSize: '15px', flexShrink: 0 }}>{seg.emoji}</span>
                       <span style={{ color: active ? '#4ADE80' : '#D1D5DB', fontSize: '11px', fontWeight: active ? '600' : '500', lineHeight: '1.3' }}>
                         {seg.label}
                       </span>
@@ -231,16 +256,12 @@ export default function ConfigPanel({
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ fontSize: '18px', flexShrink: 0 }}>{t.icon}</span>
+                      <span style={{ flexShrink: 0 }}>{TYPE_ICONS_PH[t.id] || <SquaresFour size={17} />}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ color: active ? '#F2F2F7' : '#D1D5DB', fontSize: '12px', fontWeight: '600' }}>{t.name}</div>
                         <div style={{ color: '#6B7280', fontSize: '10.5px', marginTop: '1px' }}>{t.desc}</div>
                       </div>
-                      {active && (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={t.color} strokeWidth="2.5" strokeLinecap="round">
-                          <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                      )}
+                      {active && <Check size={14} color={t.color} weight="bold" />}
                     </button>
                   )
                 })}
@@ -254,7 +275,7 @@ export default function ConfigPanel({
               return (
                 <div style={{ background: '#1A3A22', borderRadius: '10px', padding: '10px 12px', border: '1px solid #25D36640' }}>
                   <div style={{ color: '#4ADE80', fontSize: '11.5px', fontWeight: '600', marginBottom: '3px' }}>
-                    {seg?.emoji} {seg?.label} · {type?.icon} {type?.name}
+                    {seg?.emoji} {seg?.label} · {type?.name}
                   </div>
                   <div style={{ color: '#6B7280', fontSize: '10.5px' }}>
                     Marca: <span style={{ color: '#9CA3AF' }}>{seg?.brand}</span> · Cliente: <span style={{ color: '#9CA3AF' }}>{seg?.customer}</span>
@@ -286,19 +307,17 @@ export default function ConfigPanel({
       </div>
 
       {/* Export footer */}
-      <div style={{ padding: '10px 14px', borderTop: '1px solid #2C2C2E', display: 'flex', gap: '8px' }}>
+      <div style={{ padding: '10px 14px', borderTop: '1px solid #2C2C2E' }}>
         <button
           onClick={onExport}
           style={{
-            flex: 1, height: '40px', borderRadius: '10px',
+            width: '100%', height: '40px', borderRadius: '10px',
             background: '#2C2C2E', color: '#E9EDEF', fontWeight: '600', fontSize: '13px',
             border: '1px solid #3C3C3E', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-          </svg>
+          <DownloadSimple size={16} weight="bold" />
           Exportar PNG
         </button>
       </div>

@@ -1,10 +1,20 @@
 import { stringToColor, getInitials } from '../utils/text'
 
 function VerifiedBadge() {
+  // 12-point starburst seal, blue, white checkmark
+  // Points computed: outer R=19, inner r=14, center (20,20), 12 spikes
+  const pts = "20,1 23.6,6.5 29.5,3.6 29.9,10.1 36.5,10.5 33.5,16.4 39,20 33.5,23.6 36.5,29.5 29.9,29.9 29.5,36.4 23.6,33.5 20,39 16.4,33.5 10.5,36.4 10.1,29.9 3.5,29.5 6.5,23.6 1,20 6.5,16.4 3.5,10.5 10.1,10.1 10.5,3.6 16.4,6.5"
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-      <circle cx="12" cy="12" r="11" fill="#00A884"/>
-      <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="16" height="16" viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
+      <polygon points={pts} fill="#3B82F6" />
+      <polyline
+        points="12,21 17.5,26.5 29,13.5"
+        stroke="white"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   )
 }

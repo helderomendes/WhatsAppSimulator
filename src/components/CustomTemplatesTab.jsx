@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { FloppyDisk, Trash, DownloadSimple } from '@phosphor-icons/react'
 
 const inputStyle = {
   width: '100%', background: '#1C1C1E', color: '#F2F2F7', fontSize: '13px',
@@ -66,7 +67,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
             fontSize: '13px', fontWeight: '600',
           }}
         >
-          💾 Salvar template
+          <FloppyDisk size={14} weight="bold" /> Salvar template
         </button>
       </div>
 
@@ -114,16 +115,16 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
                     <>
                       <button
                         onClick={() => onLoad(tpl)}
-                        style={{ background: '#1A3A22', color: '#4ADE80', border: '1px solid #25D36640', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: '600' }}
+                        style={{ background: '#1A3A22', color: '#4ADE80', border: '1px solid #25D36640', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '11px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}
                       >
-                        Carregar
+                        <DownloadSimple size={12} weight="bold" /> Carregar
                       </button>
                       <button
                         onClick={() => setConfirmDelete(tpl.id)}
                         style={{ background: 'none', color: '#EF4444', border: 'none', borderRadius: '6px', padding: '4px 6px', cursor: 'pointer', fontSize: '13px' }}
                         title="Excluir"
                       >
-                        🗑
+                        <Trash size={14} />
                       </button>
                     </>
                   )}

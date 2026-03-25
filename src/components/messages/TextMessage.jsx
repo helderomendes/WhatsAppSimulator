@@ -24,46 +24,64 @@ export default function TextMessage({ msg, dark, vars }) {
   const textColor = dark ? '#E9EDEF' : '#111B21'
   const timeColor = dark ? '#8696A0' : '#667781'
 
+  // Meta width: time (max ~32px) + gap + ticks (14px) or just time for incoming
+  const metaWidth = isIn ? 34 : 50
+
   return (
     <div className={`flex mb-0.5 px-2 msg-anim ${isIn ? 'justify-start' : 'justify-end'}`}>
       <div className="relative" style={{ maxWidth: '78%' }}>
         {/* Quoted */}
         {msg.quoted && (
           <div
-            className="rounded-t-lg px-2.5 py-1.5 text-xs"
             style={{
               background: isIn ? (dark ? '#17252C' : '#F0F2F5') : (dark ? '#025144' : '#C6F0C6'),
               borderLeft: '3px solid #00A884',
               borderRadius: '8px 8px 0 0',
+              padding: '6px 10px',
             }}
           >
-            <div className="font-semibold text-[#00A884] text-[11px] mb-0.5">
+            <div style={{ color: '#00A884', fontSize: '11px', fontWeight: '600', marginBottom: '2px' }}>
               {msg.quoted.from === 'brand' ? (vars?.brand || 'Marca') : 'Você'}
             </div>
-            <div className="truncate text-[11px]" style={{ color: dark ? '#8696A0' : '#667781' }}
-              dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.quoted.text) }} />
+            <div
+              style={{ color: dark ? '#8696A0' : '#667781', fontSize: '11px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+              dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.quoted.text) }}
+            />
           </div>
         )}
 
         {/* Bubble */}
         <div
-          className="relative px-2.5 py-1.5 shadow-sm"
+          className="relative shadow-sm"
           style={{
             background: bubbleBg,
             borderRadius: msg.quoted
               ? isIn ? '0 8px 8px 8px' : '8px 0 8px 8px'
               : isIn ? '0 8px 8px 8px' : '8px 0 8px 8px',
+            padding: '6px 10px 7px 10px',
           }}
         >
           <Tail side={isIn ? 'left' : 'right'} color={bubbleBg} />
 
+          {/* Text + inline float-right meta spacer */}
+          <div style={{ color: textColor, fontSize: '14px', lineHeight: '1.4', wordBreak: 'break-word' }}>
+            {/* Invisible spacer that pushes the last text line to make room for meta */}
+            <span
+              style={{ display: 'inline-block', width: `${metaWidth}px`, height: '1px', float: 'right', clear: 'both', marginLeft: '4px', marginTop: '4px' }}
+              aria-hidden="true"
+            />
+            <span dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.text) }} />
+          </div>
+
+          {/* Meta: time + read receipt — absolute bottom-right */}
           <div
-            className="wa-text leading-snug"
-            style={{ color: textColor, fontSize: '14px' }}
-            dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.text) }}
-          />
-          <div className="flex items-center justify-end gap-1 mt-0.5" style={{ minWidth: '60px' }}>
-            <span style={{ color: timeColor, fontSize: '11px' }}>{msg.time}</span>
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '3px',
+              position: 'absolute', bottom: '5px', right: '8px',
+              pointerEvents: 'none',
+            }}
+          >
+            <span style={{ color: timeColor, fontSize: '11px', lineHeight: 1 }}>{msg.time}</span>
             {!isIn && <ReadReceipt status={msg.status} />}
           </div>
         </div>
