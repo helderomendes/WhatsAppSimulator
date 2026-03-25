@@ -115,12 +115,16 @@ function CarouselEditor({ msg, onChange }) {
   const cards = msg.cards || []
 
   const updateCard = (i, field, val) => {
-    const next = cards.map((c, j) => j === i ? { ...c, [field]: val } : c)
+    const next = cards.map((c, j) => {
+      if (j !== i) return c
+      if (field === 'btnText') return { ...c, buttons: [{ text: val }] }
+      return { ...c, [field]: val }
+    })
     onChange({ ...msg, cards: next })
   }
 
   const addCard = () => {
-    onChange({ ...msg, cards: [...cards, { title: 'Produto', emoji: '🛍️', body: 'Descrição do produto', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', btn: 'Comprar' }] })
+    onChange({ ...msg, cards: [...cards, { title: 'Produto', emoji: '🛍️', body: 'Descrição do produto', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', buttons: [{ text: 'Comprar' }] }] })
   }
 
   const removeCard = i => onChange({ ...msg, cards: cards.filter((_, j) => j !== i) })
@@ -154,7 +158,7 @@ function CarouselEditor({ msg, onChange }) {
             </div>
             <div>
               <label style={labelStyle}>Botão</label>
-              <input value={card.btn || ''} onChange={e => updateCard(i, 'btn', e.target.value)} style={inputStyle} />
+              <input value={card.buttons?.[0]?.text || card.btn || ''} onChange={e => updateCard(i, 'btnText', e.target.value)} style={inputStyle} />
             </div>
           </div>
         </div>
@@ -173,11 +177,11 @@ function ButtonsEditor({ msg, onChange }) {
   const buttons = msg.buttons || []
 
   const updateBtn = (i, val) => {
-    const next = buttons.map((b, j) => j === i ? { ...b, label: val } : b)
+    const next = buttons.map((b, j) => j === i ? { ...b, text: val } : b)
     onChange({ ...msg, buttons: next })
   }
 
-  const addBtn = () => onChange({ ...msg, buttons: [...buttons, { id: `btn${Date.now()}`, label: 'Opção' }] })
+  const addBtn = () => onChange({ ...msg, buttons: [...buttons, { id: `btn${Date.now()}`, text: 'Opção' }] })
   const removeBtn = i => onChange({ ...msg, buttons: buttons.filter((_, j) => j !== i) })
 
   return (
@@ -189,7 +193,7 @@ function ButtonsEditor({ msg, onChange }) {
       <label style={{ ...labelStyle, marginTop: '4px' }}>Botões de resposta rápida</label>
       {buttons.map((btn, i) => (
         <div key={i} style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-          <input value={btn.label} onChange={e => updateBtn(i, e.target.value)} style={{ ...inputStyle, flex: 1 }} placeholder={`Botão ${i + 1}`} />
+          <input value={btn.text || btn.label || ''} onChange={e => updateBtn(i, e.target.value)} style={{ ...inputStyle, flex: 1 }} placeholder={`Botão ${i + 1}`} />
           <SmallBtn onClick={() => removeBtn(i)} color="#EF4444">✕</SmallBtn>
         </div>
       ))}
@@ -279,7 +283,7 @@ function MsgPreviewText({ msg }) {
     switch (msg.type) {
       case 'text': return (msg.text || '').replace(/[*_~]/g, '').slice(0, 50)
       case 'image': return `${msg.imageEmoji || '🖼️'} ${msg.imageLabel || 'Imagem'}`
-      case 'carousel': return `${(msg.cards || []).length} cards`
+      case 'carousel': return `${(msg.cards || []).length} card${(msg.cards || []).length !== 1 ? 's' : ''}`
       case 'buttons': return (msg.text || '').replace(/[*_~]/g, '').slice(0, 40)
       case 'cta': return `${(msg.text || '').replace(/[*_~]/g, '').slice(0, 30)} · ${msg.btnLabel || 'Botão'}`
       case 'separator': return msg.label || 'Hoje'
@@ -295,8 +299,8 @@ function newMsg(type) {
   switch (type) {
     case 'text': return { id, type: 'text', from: 'brand', text: 'Nova mensagem', time: '14:30', status: 'read' }
     case 'image': return { id, type: 'image', from: 'brand', imageEmoji: '🖼️', imageLabel: 'Produto', imageBg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', time: '14:30', status: 'read' }
-    case 'carousel': return { id, type: 'carousel', from: 'brand', cards: [{ title: 'Produto', emoji: '🛍️', body: 'Descrição', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', btn: 'Comprar' }] }
-    case 'buttons': return { id, type: 'buttons', from: 'brand', text: 'Escolha uma opção:', buttons: [{ id: 'b1', label: 'Sim' }, { id: 'b2', label: 'Não' }], time: '14:30', status: 'read' }
+    case 'carousel': return { id, type: 'carousel', from: 'brand', cards: [{ title: 'Produto', emoji: '🛍️', body: 'Descrição', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', buttons: [{ text: 'Comprar' }] }] }
+    case 'buttons': return { id, type: 'buttons', from: 'brand', text: 'Escolha uma opção:', buttons: [{ id: 'b1', text: 'Sim' }, { id: 'b2', text: 'Não' }], time: '14:30', status: 'read' }
     case 'cta': return { id, type: 'cta', from: 'brand', text: 'Confira o link:', btnLabel: 'Acessar', btnUrl: '#', time: '14:30', status: 'read' }
     case 'separator': return { id, type: 'separator', label: 'Hoje' }
     case 'unread': return { id, type: 'unread', count: 1 }

@@ -40,7 +40,7 @@ export default function App() {
   // Messages — start from the default template
   const initialSeg = SEGMENT_MAP[DEFAULT_SEGMENT]
   const initialKey = getTemplateKey(DEFAULT_SEGMENT, DEFAULT_TYPE)
-  const [messages, setMessages] = useState(TEMPLATES[initialKey]?.messages ?? [])
+  const [messages, setMessages] = useState(TEMPLATES[initialKey] ?? [])
   const [brand, setBrand] = useState(getBrandFromSegment(initialSeg))
   const [vars, setVars] = useState(getVarsFromSegment(initialSeg))
 
@@ -53,7 +53,7 @@ export default function App() {
     if (!seg) return
     const key = getTemplateKey(segId, selectedType)
     const tpl = TEMPLATES[key]
-    if (tpl) setMessages(tpl.messages ?? [])
+    if (tpl) setMessages(tpl)
     setBrand(getBrandFromSegment(seg))
     setVars(getVarsFromSegment(seg))
   }, [selectedType])
@@ -62,7 +62,7 @@ export default function App() {
     setSelectedType(typeId)
     const key = getTemplateKey(selectedSegment, typeId)
     const tpl = TEMPLATES[key]
-    if (tpl) setMessages(tpl.messages ?? [])
+    if (tpl) setMessages(tpl)
   }, [selectedSegment])
 
   const handleBrandChange = useCallback((newBrand) => {
