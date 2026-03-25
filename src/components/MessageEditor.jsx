@@ -241,7 +241,7 @@ function CarouselEditor({ msg, onChange }) {
       ))}
       <button
         onClick={addCard}
-        style={{ background: '#2C2C2E', color: '#25D366', border: '1px dashed #25D36640', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar card
       </button>
@@ -270,7 +270,7 @@ function ButtonsEditor({ msg, onChange }) {
         </div>
       ))}
       <button onClick={addBtn}
-        style={{ background: '#2C2C2E', color: '#25D366', border: '1px dashed #25D36640', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar botão
       </button>
@@ -441,7 +441,7 @@ export default function MessageEditor({ messages, onChange }) {
                 <SmallBtn onClick={() => moveDown(i)} color={i === messages.length - 1 ? '#3C3C3E' : '#9CA3AF'}><ArrowDown size={13} /></SmallBtn>
                 <SmallBtn onClick={() => deleteMsg(msg.id)} color="#EF4444"><Trash size={13} /></SmallBtn>
               </div>
-              <span style={{ color: expanded ? '#25D366' : '#6B7280', flexShrink: 0, display: 'flex' }}>
+              <span style={{ color: expanded ? '#1877F2' : '#6B7280', flexShrink: 0, display: 'flex' }}>
                 {expanded
                   ? <ArrowDown size={12} weight="bold" />
                   : <ArrowDown size={12} weight="bold" style={{ transform: 'rotate(-90deg)' }} />}
@@ -480,7 +480,7 @@ export default function MessageEditor({ messages, onChange }) {
         </div>
       ) : (
         <button onClick={() => setShowTypePicker(true)} style={{
-          background: '#2C2C2E', color: '#25D366', border: '1px dashed #25D36650',
+          background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F250',
           borderRadius: '9px', padding: '9px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', marginTop: '2px',
         }}>
           + Adicionar mensagem
