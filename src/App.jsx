@@ -46,6 +46,31 @@ export default function App() {
 
   const phoneRef = useRef(null)
 
+  // Custom templates — persisted to localStorage
+  const [customTemplates, setCustomTemplates] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('wa_custom_templates') || '[]') }
+    catch { return [] }
+  })
+
+  const persistCustomTemplates = (tpls) => {
+    setCustomTemplates(tpls)
+    try { localStorage.setItem('wa_custom_templates', JSON.stringify(tpls)) } catch {}
+  }
+
+  const handleSaveCustomTemplate = useCallback((tpl) => {
+    persistCustomTemplates([tpl, ...customTemplates])
+  }, [customTemplates])
+
+  const handleLoadCustomTemplate = useCallback((tpl) => {
+    setMessages(tpl.messages || [])
+    if (tpl.brand) setBrand(tpl.brand)
+    if (tpl.vars) setVars(tpl.vars)
+  }, [])
+
+  const handleDeleteCustomTemplate = useCallback((id) => {
+    persistCustomTemplates(customTemplates.filter(t => t.id !== id))
+  }, [customTemplates])
+
   // When segment or type changes, reload template + brand + vars
   const handleSelectSegment = useCallback((segId) => {
     setSelectedSegment(segId)
@@ -107,6 +132,10 @@ export default function App() {
           dark={dark}
           onDarkChange={setDark}
           onExport={handleExport}
+          customTemplates={customTemplates}
+          onSaveCustomTemplate={handleSaveCustomTemplate}
+          onLoadCustomTemplate={handleLoadCustomTemplate}
+          onDeleteCustomTemplate={handleDeleteCustomTemplate}
         />
       </div>
 

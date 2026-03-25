@@ -14,10 +14,21 @@ function Card({ card, dark }) {
     >
       {/* Image */}
       <div
-        className="w-full flex items-center justify-center"
-        style={{ height: '126px', background: card.gradient || 'linear-gradient(135deg, #667eea, #764ba2)' }}
+        className="w-full flex items-center justify-center overflow-hidden"
+        style={{
+          height: '126px',
+          background: card.imageSrc ? undefined : (card.gradient || 'linear-gradient(135deg, #667eea, #764ba2)'),
+        }}
       >
-        <span style={{ fontSize: '44px' }}>{card.emoji || '📦'}</span>
+        {card.imageSrc ? (
+          <img
+            src={card.imageSrc}
+            alt={card.title || 'card'}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <span style={{ fontSize: '44px' }}>{card.emoji || '📦'}</span>
+        )}
       </div>
       {/* Body */}
       <div className="px-3 pt-2 pb-1">

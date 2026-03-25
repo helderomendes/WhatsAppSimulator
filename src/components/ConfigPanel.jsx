@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
 import MessageEditor from './MessageEditor'
+import CustomTemplatesTab from './CustomTemplatesTab'
 
 function Toggle({ label, checked, onChange }) {
   return (
@@ -63,9 +64,10 @@ export default function ConfigPanel({
   vars, onVarsChange,
   dark, onDarkChange,
   onExport,
+  customTemplates, onSaveCustomTemplate, onLoadCustomTemplate, onDeleteCustomTemplate,
 }) {
   const fileRef = useRef()
-  const [tab, setTab] = useState('templates') // 'templates' | 'editor'
+  const [tab, setTab] = useState('templates') // 'templates' | 'editor' | 'saved'
   const [showSettings, setShowSettings] = useState(false)
 
   const handleLogoUpload = e => {
@@ -175,6 +177,7 @@ export default function ConfigPanel({
       <div style={{ display: 'flex', padding: '8px 12px', gap: '4px', background: '#141416', borderBottom: '1px solid #2C2C2E' }}>
         {tabBtn('templates', '📋 Templates')}
         {tabBtn('editor', '✏️ Editor')}
+        {tabBtn('saved', `⭐ Salvos${customTemplates?.length ? ` (${customTemplates.length})` : ''}`)}
       </div>
 
       {/* Tab content */}
@@ -267,6 +270,18 @@ export default function ConfigPanel({
 
         {tab === 'editor' && (
           <MessageEditor messages={messages} onChange={onMessagesChange} />
+        )}
+
+        {tab === 'saved' && (
+          <CustomTemplatesTab
+            templates={customTemplates || []}
+            currentMessages={messages}
+            currentBrand={brand}
+            currentVars={vars}
+            onSave={onSaveCustomTemplate}
+            onLoad={onLoadCustomTemplate}
+            onDelete={onDeleteCustomTemplate}
+          />
         )}
       </div>
 

@@ -21,22 +21,32 @@ export default function ImageMessage({ msg, dark }) {
           <div
             className="relative flex items-center justify-center"
             style={{
-              background: msg.gradient || 'linear-gradient(135deg, #1a1a2e, #0f3460)',
               width: '240px',
-              height: '148px',
+              height: '200px',
+              background: msg.imageSrc ? undefined : (msg.imageBg || msg.gradient || 'linear-gradient(135deg, #1a1a2e, #0f3460)'),
+              overflow: 'hidden',
             }}
           >
-            <div className="text-center px-3">
-              <div style={{ fontSize: '36px', marginBottom: '6px' }}>{msg.emoji || '📦'}</div>
-              {msg.imageLabel && (
-                <div
-                  className="text-white font-bold text-center leading-tight"
-                  style={{ fontSize: '11px', textShadow: '0 1px 4px rgba(0,0,0,0.6)', whiteSpace: 'pre-line' }}
-                >
-                  {msg.imageLabel}
-                </div>
-              )}
-            </div>
+            {msg.imageSrc ? (
+              <img
+                src={msg.imageSrc}
+                alt={msg.imageLabel || 'imagem'}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            ) : (
+              <div className="text-center px-3">
+                <div style={{ fontSize: '36px', marginBottom: '6px' }}>{msg.imageEmoji || msg.emoji || '📦'}</div>
+                {msg.imageLabel && (
+                  <div
+                    className="text-white font-bold text-center leading-tight"
+                    style={{ fontSize: '11px', textShadow: '0 1px 4px rgba(0,0,0,0.6)', whiteSpace: 'pre-line' }}
+                  >
+                    {msg.imageLabel}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Share icon */}
             <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center cursor-pointer">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="white">
@@ -51,6 +61,13 @@ export default function ImageMessage({ msg, dark }) {
               <ReadReceipt status={msg.status} />
             </div>
           </div>
+
+          {/* Caption below image */}
+          {msg.caption && (
+            <div style={{ background: cardBg, padding: '6px 10px 8px', color: dark ? '#E9EDEF' : '#111B21', fontSize: '13.5px', lineHeight: '1.4' }}>
+              {msg.caption}
+            </div>
+          )}
         </div>
       </div>
     </div>
