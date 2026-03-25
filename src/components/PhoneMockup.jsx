@@ -2,89 +2,93 @@ import ChatHeader from './ChatHeader'
 import WhatsAppChat from './WhatsAppChat'
 import ChatInput from './ChatInput'
 
-function StatusBar({ dark, time = '9:41' }) {
-  const color = dark ? '#E9EDEF' : '#111B21'
+function StatusBar({ dark, time }) {
+  const bg = dark ? '#1F2C34' : '#FFFFFF'
+  const color = dark ? '#E9EDEF' : '#000000'
+
   return (
     <div
-      className="flex items-center justify-between px-6 pt-3 pb-1"
-      style={{ backgroundColor: dark ? '#1F2C34' : '#075E54', height: '44px' }}
+      className="flex items-end justify-between px-5 pb-1"
+      style={{ background: bg, paddingTop: '14px', height: '48px', flexShrink: 0 }}
     >
-      <span className="text-[15px] font-semibold" style={{ color: dark ? '#E9EDEF' : '#fff' }}>
+      {/* Time */}
+      <span style={{ color, fontSize: '15px', fontWeight: '600', letterSpacing: '-0.3px' }}>
         {time}
       </span>
+
+      {/* Right icons */}
       <div className="flex items-center gap-1.5">
         {/* Signal bars */}
-        <svg width="16" height="12" viewBox="0 0 16 12" fill={dark ? '#E9EDEF' : '#fff'}>
-          <rect x="0" y="8" width="3" height="4" rx="0.5" opacity="1"/>
-          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5" opacity="1"/>
-          <rect x="9" y="3" width="3" height="9" rx="0.5" opacity="1"/>
-          <rect x="13.5" y="0" width="2.5" height="12" rx="0.5" opacity="0.35"/>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill={color}>
+          <rect x="0" y="8" width="3" height="4" rx="0.5"/>
+          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5"/>
+          <rect x="9" y="3" width="3" height="9" rx="0.5"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="0.5" opacity="0.3"/>
         </svg>
         {/* WiFi */}
-        <svg width="16" height="12" viewBox="0 0 24 18" fill={dark ? '#E9EDEF' : '#fff'}>
-          <path d="M12 14.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
-          <path d="M7.76 10.34C8.97 9.12 10.4 8.5 12 8.5s3.03.62 4.24 1.84l1.42-1.42A8.5 8.5 0 0012 6.5a8.5 8.5 0 00-5.66 2.42l1.42 1.42z" opacity="0.8"/>
-          <path d="M4.93 7.07A12.5 12.5 0 0112 4.5a12.5 12.5 0 017.07 2.57l1.42-1.42A14.5 14.5 0 0012 2.5a14.5 14.5 0 00-9.49 3.15l1.42 1.42z" opacity="0.5"/>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill={color}>
+          <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
+          <path d="M4.1 6.9C5.1 5.9 6.5 5.25 8 5.25s2.9.65 3.9 1.65l1.1-1.1A7.1 7.1 0 008 3.5a7.1 7.1 0 00-5 2.3l1.1 1.1z" opacity="0.75"/>
+          <path d="M1.3 4.1A10.5 10.5 0 018 1.5c2.55 0 4.9.9 6.7 2.6l1.05-1.05A12.1 12.1 0 008 0 12.1 12.1 0 00.25 3.05L1.3 4.1z" opacity="0.4"/>
         </svg>
         {/* Battery */}
-        <div className="flex items-center">
-          <div className="relative w-[22px] h-[11px] rounded-[2px] border" style={{ borderColor: dark ? '#E9EDEF' : '#fff' }}>
-            <div className="absolute inset-[1.5px] rounded-[1px]" style={{ backgroundColor: dark ? '#E9EDEF' : '#fff', width: '80%' }} />
+        <div className="flex items-center gap-0.5">
+          <span style={{ color, fontSize: '12px', fontWeight: '600' }}>96</span>
+          <div className="relative flex items-center" style={{ width: '25px', height: '12px' }}>
+            <div
+              className="absolute rounded-sm"
+              style={{ left: 0, top: 0, width: '22px', height: '12px', border: `1.5px solid ${color}`, borderRadius: '3px' }}
+            />
+            <div
+              className="absolute rounded-sm"
+              style={{ left: '2px', top: '2px', width: '16px', height: '8px', background: color, opacity: 0.9, borderRadius: '1.5px' }}
+            />
+            <div
+              className="absolute"
+              style={{ right: '-4px', top: '3.5px', width: '2.5px', height: '5px', background: color, opacity: 0.6, borderRadius: '0 1px 1px 0' }}
+            />
           </div>
-          <div className="w-[2px] h-[4px] rounded-r-[1px] ml-0.5" style={{ backgroundColor: dark ? '#E9EDEF' : '#fff' }} />
         </div>
       </div>
     </div>
   )
 }
 
-export default function PhoneMockup({ brand, messages, dark, vars, chatTime }) {
+export default function PhoneMockup({ brand, messages, dark, vars }) {
+  const now = new Date()
+  const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+
+  // Frame colors
+  const frameColor = '#1C1C1E'
+  const frameSide = '#2C2C2E'
+
   return (
     <div
-      className="relative phone-shadow"
+      className="relative"
       style={{
         width: '375px',
-        height: '780px',
-        borderRadius: '50px',
-        background: 'linear-gradient(145deg, #3a3a3c, #1c1c1e)',
-        padding: '12px',
+        height: '790px',
+        borderRadius: '52px',
+        background: `linear-gradient(160deg, #3A3A3C 0%, ${frameColor} 40%, #2A2A2C 100%)`,
+        padding: '13px',
         boxSizing: 'border-box',
+        boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.15)',
       }}
     >
-      {/* Side button left (volume) */}
-      <div
-        className="absolute"
-        style={{
-          left: '-3px', top: '120px', width: '3px', height: '32px',
+      {/* Volume buttons (left) */}
+      {[115, 160, 205].map((top, i) => (
+        <div key={i} className="absolute" style={{
+          left: '-3.5px', top, width: '3.5px', height: i === 0 ? 28 : 36,
           borderRadius: '2px 0 0 2px',
-          background: 'linear-gradient(to right, #3a3a3c, #555)',
-        }}
-      />
-      <div
-        className="absolute"
-        style={{
-          left: '-3px', top: '160px', width: '3px', height: '32px',
-          borderRadius: '2px 0 0 2px',
-          background: 'linear-gradient(to right, #3a3a3c, #555)',
-        }}
-      />
-      <div
-        className="absolute"
-        style={{
-          left: '-3px', top: '200px', width: '3px', height: '32px',
-          borderRadius: '2px 0 0 2px',
-          background: 'linear-gradient(to right, #3a3a3c, #555)',
-        }}
-      />
-      {/* Power button right */}
-      <div
-        className="absolute"
-        style={{
-          right: '-3px', top: '160px', width: '3px', height: '60px',
-          borderRadius: '0 2px 2px 0',
-          background: 'linear-gradient(to left, #3a3a3c, #555)',
-        }}
-      />
+          background: `linear-gradient(to right, #555, ${frameSide})`,
+        }}/>
+      ))}
+      {/* Power button (right) */}
+      <div className="absolute" style={{
+        right: '-3.5px', top: 165, width: '3.5px', height: 70,
+        borderRadius: '0 2px 2px 0',
+        background: `linear-gradient(to left, #555, ${frameSide})`,
+      }}/>
 
       {/* Screen */}
       <div
@@ -93,49 +97,46 @@ export default function PhoneMockup({ brand, messages, dark, vars, chatTime }) {
           width: '100%',
           height: '100%',
           borderRadius: '40px',
-          background: dark ? '#0B141A' : '#E5DDD5',
+          background: dark ? '#0B141A' : '#F0F2F5',
         }}
       >
         {/* Dynamic Island */}
         <div
-          className="absolute top-3 left-1/2 -translate-x-1/2 z-10"
+          className="absolute z-20"
           style={{
-            width: '120px',
-            height: '34px',
+            top: '10px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '126px',
+            height: '37px',
             borderRadius: '20px',
-            backgroundColor: '#000',
-            zIndex: 20,
+            background: '#000',
           }}
         />
 
         {/* Status bar */}
-        <StatusBar dark={dark} time={chatTime || '9:41'} />
+        <StatusBar dark={dark} time={time} />
 
         {/* Chat header */}
         <ChatHeader brand={brand} dark={dark} />
 
-        {/* Messages */}
-        <WhatsAppChat messages={messages} dark={dark} vars={vars} />
+        {/* Messages area */}
+        <div className="flex-1 min-h-0 overflow-y-auto chat-scroll">
+          <WhatsAppChat messages={messages} dark={dark} vars={vars} />
+        </div>
 
-        {/* Input */}
+        {/* Input bar */}
         <ChatInput dark={dark} />
 
         {/* Home indicator */}
         <div
-          style={{
-            height: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: dark ? '#1F2C34' : '#F0F2F5',
-          }}
+          className="flex items-center justify-center flex-shrink-0"
+          style={{ height: '22px', background: dark ? '#1F2C34' : '#F0F2F5' }}
         >
           <div
             style={{
-              width: '120px',
-              height: '4px',
-              borderRadius: '2px',
-              backgroundColor: dark ? '#4A5568' : '#CBD5E0',
+              width: '130px', height: '5px', borderRadius: '3px',
+              background: dark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)',
             }}
           />
         </div>

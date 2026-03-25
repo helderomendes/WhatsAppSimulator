@@ -1,26 +1,68 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import PhoneMockup from './components/PhoneMockup'
 import ConfigPanel from './components/ConfigPanel'
 import { TEMPLATES, DEFAULT_BRAND, DEFAULT_VARS } from './data/templates'
+import { generateConversation } from './services/claudeApi'
+
+const LS_API_KEY = 'wa_sim_api_key'
 
 export default function App() {
   const [selectedTemplate, setSelectedTemplate] = useState('carousel')
+  const [generatedMessages, setGeneratedMessages] = useState(null)
   const [brand, setBrand] = useState({ ...DEFAULT_BRAND })
   const [vars, setVars] = useState({ ...DEFAULT_VARS })
-  const [dark, setDark] = useState(true)
+  const [dark, setDark] = useState(false)
+  const [prompt, setPrompt] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState(null)
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem(LS_API_KEY) || '')
   const phoneRef = useRef(null)
+
+  // Persist API key
+  useEffect(() => {
+    localStorage.setItem(LS_API_KEY, apiKey)
+  }, [apiKey])
 
   const handleSelectTemplate = useCallback((id) => {
     setSelectedTemplate(id)
-    // Sync brand name with vars
-    const tpl = TEMPLATES[id]
-    if (tpl) setVars(v => ({ ...v, brand: brand.name }))
-  }, [brand.name])
+    setGeneratedMessages(null)
+    setError(null)
+  }, [])
 
   const handleBrandChange = useCallback((newBrand) => {
     setBrand(newBrand)
     setVars(v => ({ ...v, brand: newBrand.name }))
   }, [])
+
+  const handleGenerate = useCallback(async () => {
+    if (!prompt.trim()) return
+    if (!apiKey.trim()) {
+      setError('Adicione sua Anthropic API Key em ⚙️ Configurações')
+      return
+    }
+    setGenerating(true)
+    setError(null)
+    try {
+      const result = await generateConversation(apiKey, prompt)
+      setGeneratedMessages(result.messages)
+      if (result.brand?.name) {
+        setBrand(b => ({
+          ...b,
+          name: result.brand.name,
+          verified: result.brand.verified ?? b.verified,
+          isCommercial: result.brand.isCommercial ?? b.isCommercial,
+          avatarColor: result.brand.avatarColor,
+        }))
+      }
+      if (result.vars) {
+        setVars(v => ({ ...v, ...result.vars }))
+      }
+    } catch (err) {
+      setError(err.message || 'Erro ao gerar conversa')
+    } finally {
+      setGenerating(false)
+    }
+  }, [apiKey, prompt])
 
   const handleExport = useCallback(async () => {
     const { default: html2canvas } = await import('html2canvas')
@@ -28,28 +70,31 @@ export default function App() {
     if (!el) return
     try {
       const canvas = await html2canvas(el, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-        logging: false,
+        backgroundColor: null, scale: 2.5, useCORS: true, logging: false,
+        ignoreElements: el => el.classList?.contains('no-export'),
       })
       const link = document.createElement('a')
-      link.download = `whatsapp-${selectedTemplate}-${Date.now()}.png`
+      link.download = `whatsapp-sim-${Date.now()}.png`
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (e) {
       console.error('Export failed:', e)
     }
-  }, [selectedTemplate])
+  }, [])
 
-  const template = TEMPLATES[selectedTemplate]
-  const messages = template?.messages || []
+  // Active messages: generated ones take priority over template
+  const activeMessages = generatedMessages ?? TEMPLATES[selectedTemplate]?.messages ?? []
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#0D0D0F' }}>
-      {/* Left config panel */}
-      <div className="w-[320px] flex-shrink-0 h-full border-r border-[#1C1C1E]">
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#111113' }}>
+
+      {/* Left panel */}
+      <div style={{ width: '320px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C1C1E' }}>
         <ConfigPanel
+          prompt={prompt}
+          onPromptChange={setPrompt}
+          generating={generating}
+          onGenerate={handleGenerate}
           selectedTemplate={selectedTemplate}
           onSelectTemplate={handleSelectTemplate}
           brand={brand}
@@ -58,50 +103,63 @@ export default function App() {
           onVarsChange={setVars}
           dark={dark}
           onDarkChange={setDark}
+          apiKey={apiKey}
+          onApiKeyChange={setApiKey}
           onExport={handleExport}
+          error={error}
         />
       </div>
 
-      {/* Main preview area */}
-      <div className="flex-1 flex items-center justify-center overflow-hidden relative">
-        {/* Background grid */}
+      {/* Preview area */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        {/* Subtle dot grid */}
         <div
-          className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, #2C2C2E 1px, transparent 0)',
-            backgroundSize: '24px 24px',
+            position: 'absolute', inset: 0, opacity: 0.15,
+            backgroundImage: 'radial-gradient(circle, #444 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
           }}
         />
-
-        {/* Gradient overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, transparent 40%, #0D0D0F 100%)' }}
-        />
+        {/* Radial vignette */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse at center, transparent 30%, #111113 100%)',
+          pointerEvents: 'none',
+        }}/>
 
         {/* Phone */}
-        <div ref={phoneRef} className="relative z-10">
+        <div ref={phoneRef} style={{ position: 'relative', zIndex: 10 }}>
           <PhoneMockup
             brand={brand}
-            messages={messages}
+            messages={activeMessages}
             dark={dark}
             vars={{ ...vars, brand: brand.name }}
           />
         </div>
 
-        {/* Template badge */}
-        <div className="absolute top-4 right-4 flex items-center gap-2 bg-[#1C1C1E] rounded-full px-3 py-1.5 border border-[#2C2C2E]">
-          <span className="text-base">{template?.icon}</span>
-          <span className="text-[12px] text-[#9CA3AF] font-medium">{template?.name}</span>
-        </div>
-
-        {/* Info badge */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-[#1C1C1E] rounded-full px-4 py-2 border border-[#2C2C2E]">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse" />
-          <span className="text-[11px] text-[#6B7280]">
-            WhatsApp Business API Simulator • Todos os tipos de mensagem suportados
-          </span>
-        </div>
+        {/* Status pill */}
+        {generatedMessages && (
+          <div
+            style={{
+              position: 'absolute', top: '16px', right: '16px',
+              background: '#1A3A22', border: '1px solid #25D366',
+              borderRadius: '20px', padding: '6px 12px',
+              display: 'flex', alignItems: 'center', gap: '6px',
+            }}
+          >
+            <div className="pulse-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#25D366' }}/>
+            <span style={{ color: '#4ADE80', fontSize: '12px', fontWeight: '500' }}>Gerado por Claude AI</span>
+          </div>
+        )}
       </div>
     </div>
   )

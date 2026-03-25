@@ -1,58 +1,58 @@
 export default function ChatInput({ dark }) {
-  const bg = dark ? '#1F2C34' : '#F0F2F5'
+  const barBg = dark ? '#1F2C34' : '#F0F2F5'
   const inputBg = dark ? '#2A3942' : '#FFFFFF'
-  const textColor = dark ? '#8696A0' : '#8696A0'
   const iconColor = dark ? '#8696A0' : '#8696A0'
+  const borderColor = dark ? 'transparent' : 'rgba(0,0,0,0.1)'
 
   return (
     <div
       className="flex items-center gap-2 px-2 py-2"
-      style={{ backgroundColor: bg }}
+      style={{ background: barBg, borderTop: `1px solid ${borderColor}` }}
     >
-      {/* Plus / attach */}
-      <button className="flex-shrink-0 w-9 h-9 flex items-center justify-center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 8v8M8 12h8"/>
+      {/* + button */}
+      <button className="flex-shrink-0 flex items-center justify-center rounded-full" style={{ width: '40px', height: '40px' }}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.8" strokeLinecap="round">
+          <circle cx="12" cy="12" r="10.5"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
         </svg>
       </button>
 
-      {/* Input field */}
+      {/* Input pill */}
       <div
-        className="flex-1 flex items-center gap-2 px-3 py-2 rounded-full"
-        style={{ backgroundColor: inputBg, minHeight: '36px' }}
+        className="flex-1 flex items-center gap-2 px-3 rounded-full"
+        style={{ background: inputBg, height: '40px', border: `1px solid ${borderColor}` }}
       >
         {/* Emoji */}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.6" strokeLinecap="round">
           <circle cx="12" cy="12" r="10"/>
           <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <line x1="9" y1="9" x2="9.01" y2="9"/>
-          <line x1="15" y1="9" x2="15.01" y2="9"/>
+          <circle cx="9" cy="9" r="1" fill={iconColor}/>
+          <circle cx="15" cy="9" r="1" fill={iconColor}/>
         </svg>
-
-        <span className="flex-1 text-[14px]" style={{ color: textColor }}>
-          Mensagem
-        </span>
-
-        {/* Sticker/GIF */}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round">
-          <rect x="3" y="3" width="18" height="18" rx="3"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
+        <span className="flex-1 text-sm" style={{ color: dark ? '#6B7683' : '#9CA3AF' }}>Mensagem</span>
+        {/* Sticker */}
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.6" strokeLinecap="round">
+          <rect x="3" y="3" width="18" height="18" rx="4"/>
+          <circle cx="8.5" cy="8.5" r="1.5" fill={iconColor}/>
           <path d="M21 15l-5-5L5 21"/>
         </svg>
-
         {/* Camera */}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.5" strokeLinecap="round">
-          <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-          <circle cx="12" cy="13" r="4"/>
+        <svg width="19" height="17" viewBox="0 0 24 20" fill="none" stroke={iconColor} strokeWidth="1.6" strokeLinecap="round">
+          <path d="M23 18a2 2 0 01-2 2H3a2 2 0 01-2-2V7a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+          <circle cx="12" cy="12.5" r="3.5"/>
         </svg>
       </div>
 
-      {/* Mic */}
-      <button className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-[#00A884]">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-          <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
-          <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>
+      {/* Mic button */}
+      <button
+        className="flex-shrink-0 flex items-center justify-center rounded-full"
+        style={{ width: '40px', height: '40px', background: '#00A884' }}
+      >
+        <svg width="17" height="22" viewBox="0 0 17 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+          <rect x="4.5" y="1" width="8" height="14" rx="4"/>
+          <path d="M1 10v2a7.5 7.5 0 0015 0v-2M8.5 19v4"/>
+          <line x1="5.5" y1="23" x2="11.5" y2="23"/>
         </svg>
       </button>
     </div>

@@ -1,56 +1,48 @@
 import { parseWAMarkdown } from '../../utils/text'
 
-function CarouselCard({ card, dark }) {
+function Card({ card, dark }) {
   const cardBg = dark ? '#1F2C34' : '#FFFFFF'
   const textColor = dark ? '#E9EDEF' : '#111B21'
   const subColor = dark ? '#8696A0' : '#667781'
-  const dividerColor = dark ? 'rgba(134,150,160,0.2)' : 'rgba(0,0,0,0.1)'
-  const btnColor = dark ? '#00A884' : '#00A884'
+  const divider = dark ? 'rgba(134,150,160,0.18)' : 'rgba(0,0,0,0.08)'
+  const btnColor = '#00A884'
 
   return (
     <div
-      className="carousel-card rounded-xl overflow-hidden flex-shrink-0"
-      style={{ width: '200px', backgroundColor: cardBg }}
+      className="flex-shrink-0 overflow-hidden"
+      style={{ width: '210px', borderRadius: '10px', background: cardBg, boxShadow: dark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.12)' }}
     >
-      {/* Card image */}
+      {/* Image */}
       <div
-        className="w-full h-[120px] flex items-center justify-center relative"
-        style={{ background: card.gradient || 'linear-gradient(135deg, #667eea, #764ba2)' }}
+        className="w-full flex items-center justify-center"
+        style={{ height: '126px', background: card.gradient || 'linear-gradient(135deg, #667eea, #764ba2)' }}
       >
-        <span className="text-5xl">{card.emoji || '📦'}</span>
+        <span style={{ fontSize: '44px' }}>{card.emoji || '📦'}</span>
       </div>
-
-      {/* Card body */}
-      <div className="p-3 pb-1">
-        <div
-          className="font-semibold text-[13px] leading-tight mb-1"
-          style={{ color: textColor }}
-        >
+      {/* Body */}
+      <div className="px-3 pt-2 pb-1">
+        <div className="font-semibold leading-tight truncate" style={{ color: textColor, fontSize: '13.5px' }}>
           {card.title}
         </div>
         {card.body && (
           <div
-            className="text-[12px] leading-snug"
-            style={{ color: subColor }}
+            className="mt-0.5 leading-snug"
+            style={{ color: subColor, fontSize: '12px' }}
             dangerouslySetInnerHTML={{ __html: parseWAMarkdown(card.body) }}
           />
         )}
       </div>
-
       {/* Buttons */}
-      {card.buttons && card.buttons.map((btn, i) => (
+      {card.buttons?.map((btn, i) => (
         <div key={i}>
-          <div style={{ height: '1px', backgroundColor: dividerColor, margin: '0 12px' }} />
+          <div style={{ height: '1px', background: divider, margin: '0 12px' }} />
           <button
-            className="w-full py-2.5 px-3 flex items-center justify-center gap-1.5 text-[13px] font-medium"
-            style={{ color: btnColor, background: 'transparent' }}
+            className="w-full py-2.5 flex items-center justify-center gap-1.5 font-medium"
+            style={{ color: btnColor, background: 'transparent', fontSize: '13.5px' }}
           >
-            {btn.icon && (
-              <span className="text-[11px] font-bold border rounded-sm px-0.5"
-                style={{ borderColor: btnColor, color: btnColor, fontSize: '9px' }}>
-                {btn.icon}
-              </span>
-            )}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+            </svg>
             {btn.text}
           </button>
         </div>
@@ -60,34 +52,19 @@ function CarouselCard({ card, dark }) {
 }
 
 export default function CarouselMessage({ msg, dark }) {
-  const containerColor = dark ? '#1F2C34' : '#FFFFFF'
-
   return (
-    <div className="flex mb-1 px-2 justify-start">
-      <div className="w-full max-w-[90%]">
+    <div className="flex mb-1 px-2 justify-start msg-anim">
+      <div style={{ maxWidth: '92%' }}>
         <div
-          className="relative overflow-hidden"
-          style={{ borderRadius: '0 8px 8px 8px' }}
+          className="flex gap-2.5 overflow-x-auto pb-1 carousel-scroll"
+          style={{ paddingRight: '4px' }}
         >
-          {/* Scrollable cards */}
-          <div
-            className="flex gap-2 overflow-x-auto pb-2 carousel-scroll pl-0 pr-2"
-            style={{ paddingBottom: '4px' }}
-          >
-            {msg.cards.map((card, i) => (
-              <CarouselCard key={i} card={card} dark={dark} />
-            ))}
-          </div>
+          {msg.cards.map((card, i) => (
+            <Card key={i} card={card} dark={dark} />
+          ))}
         </div>
-
-        {/* Timestamp */}
-        <div className={`flex justify-start px-1 mt-0.5`}>
-          <span
-            className="text-[10px]"
-            style={{ color: dark ? '#8696A0' : '#667781' }}
-          >
-            {msg.time}
-          </span>
+        <div className="mt-1 px-0.5">
+          <span style={{ color: dark ? '#8696A0' : '#667781', fontSize: '11px' }}>{msg.time}</span>
         </div>
       </div>
     </div>

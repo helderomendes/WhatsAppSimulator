@@ -1,32 +1,31 @@
-// WhatsApp-style read receipts
-export default function ReadReceipt({ status, dark }) {
+export default function ReadReceipt({ status }) {
   if (status === 'sending') {
     return (
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="inline-block ml-1">
-        <circle cx="8" cy="8" r="7" stroke="#8696A0" strokeWidth="1.5" strokeDasharray="4 2" />
+      <svg width="12" height="12" viewBox="0 0 12 12" className="inline-block ml-0.5 flex-shrink-0">
+        <circle cx="6" cy="6" r="5" stroke="#8696A0" strokeWidth="1.2" fill="none" strokeDasharray="3 2"/>
       </svg>
     )
   }
   if (status === 'sent') {
     return (
-      <svg width="14" height="10" viewBox="0 0 16 11" fill="none" className="inline-block ml-1">
-        <path d="M1 5.5L5.5 10L15 1" stroke="#8696A0" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <svg width="13" height="9" viewBox="0 0 13 9" fill="none" className="inline-block ml-0.5 flex-shrink-0">
+        <path d="M1 4.5L4.5 8L12 1" stroke="#8696A0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     )
   }
   if (status === 'delivered') {
     return (
-      <svg width="16" height="10" viewBox="0 0 18 11" fill="none" className="inline-block ml-1">
-        <path d="M1 5.5L5.5 10L15 1" stroke="#8696A0" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M5 5.5L9.5 10L19 1" stroke="#8696A0" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <svg width="16" height="9" viewBox="0 0 16 9" fill="none" className="inline-block ml-0.5 flex-shrink-0">
+        <path d="M1 4.5L4.5 8L12 1" stroke="#8696A0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M4 4.5L7.5 8L15 1" stroke="#8696A0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     )
   }
-  // read - blue
+  // read — blue ticks
   return (
-    <svg width="16" height="10" viewBox="0 0 18 11" fill="none" className="inline-block ml-1">
-      <path d="M1 5.5L5.5 10L15 1" stroke="#53BDEB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M5 5.5L9.5 10L19 1" stroke="#53BDEB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="16" height="9" viewBox="0 0 16 9" fill="none" className="inline-block ml-0.5 flex-shrink-0">
+      <path d="M1 4.5L4.5 8L12 1" stroke="#53BDEB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 4.5L7.5 8L15 1" stroke="#53BDEB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
