@@ -1,68 +1,74 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import PhoneMockup from './components/PhoneMockup'
 import ConfigPanel from './components/ConfigPanel'
-import { TEMPLATES, DEFAULT_BRAND, DEFAULT_VARS } from './data/templates'
-import { generateConversation } from './services/claudeApi'
+import { TEMPLATES, TYPES, DEFAULT_BRAND } from './data/templates'
+import { SEGMENTS, SEGMENT_MAP } from './data/segments'
 
-const LS_API_KEY = 'wa_sim_api_key'
+const DEFAULT_SEGMENT = 'beauty'
+const DEFAULT_TYPE = 'carousel'
+
+function getTemplateKey(segId, typeId) {
+  return `${segId}_${typeId}`
+}
+
+function getBrandFromSegment(seg) {
+  return {
+    ...DEFAULT_BRAND,
+    name: seg.brand,
+    avatarColor: seg.avatarColor,
+    verified: true,
+    isCommercial: true,
+  }
+}
+
+function getVarsFromSegment(seg) {
+  return {
+    nome: seg.customer,
+    brand: seg.brand,
+    fan_name: seg.fanName,
+    coupon: seg.coupon,
+    discount: seg.discount,
+    product: seg.product,
+  }
+}
 
 export default function App() {
-  const [selectedTemplate, setSelectedTemplate] = useState('carousel')
-  const [generatedMessages, setGeneratedMessages] = useState(null)
-  const [brand, setBrand] = useState({ ...DEFAULT_BRAND })
-  const [vars, setVars] = useState({ ...DEFAULT_VARS })
+  const [selectedSegment, setSelectedSegment] = useState(DEFAULT_SEGMENT)
+  const [selectedType, setSelectedType] = useState(DEFAULT_TYPE)
   const [dark, setDark] = useState(false)
-  const [prompt, setPrompt] = useState('')
-  const [generating, setGenerating] = useState(false)
-  const [error, setError] = useState(null)
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem(LS_API_KEY) || '')
+
+  // Messages — start from the default template
+  const initialSeg = SEGMENT_MAP[DEFAULT_SEGMENT]
+  const initialKey = getTemplateKey(DEFAULT_SEGMENT, DEFAULT_TYPE)
+  const [messages, setMessages] = useState(TEMPLATES[initialKey]?.messages ?? [])
+  const [brand, setBrand] = useState(getBrandFromSegment(initialSeg))
+  const [vars, setVars] = useState(getVarsFromSegment(initialSeg))
+
   const phoneRef = useRef(null)
 
-  // Persist API key
-  useEffect(() => {
-    localStorage.setItem(LS_API_KEY, apiKey)
-  }, [apiKey])
+  // When segment or type changes, reload template + brand + vars
+  const handleSelectSegment = useCallback((segId) => {
+    setSelectedSegment(segId)
+    const seg = SEGMENT_MAP[segId]
+    if (!seg) return
+    const key = getTemplateKey(segId, selectedType)
+    const tpl = TEMPLATES[key]
+    if (tpl) setMessages(tpl.messages ?? [])
+    setBrand(getBrandFromSegment(seg))
+    setVars(getVarsFromSegment(seg))
+  }, [selectedType])
 
-  const handleSelectTemplate = useCallback((id) => {
-    setSelectedTemplate(id)
-    setGeneratedMessages(null)
-    setError(null)
-  }, [])
+  const handleSelectType = useCallback((typeId) => {
+    setSelectedType(typeId)
+    const key = getTemplateKey(selectedSegment, typeId)
+    const tpl = TEMPLATES[key]
+    if (tpl) setMessages(tpl.messages ?? [])
+  }, [selectedSegment])
 
   const handleBrandChange = useCallback((newBrand) => {
     setBrand(newBrand)
     setVars(v => ({ ...v, brand: newBrand.name }))
   }, [])
-
-  const handleGenerate = useCallback(async () => {
-    if (!prompt.trim()) return
-    if (!apiKey.trim()) {
-      setError('Adicione sua Anthropic API Key em ⚙️ Configurações')
-      return
-    }
-    setGenerating(true)
-    setError(null)
-    try {
-      const result = await generateConversation(apiKey, prompt)
-      setGeneratedMessages(result.messages)
-      if (result.brand?.name) {
-        setBrand(b => ({
-          ...b,
-          name: result.brand.name,
-          verified: result.brand.verified ?? b.verified,
-          isCommercial: result.brand.isCommercial ?? b.isCommercial,
-          avatarColor: result.brand.avatarColor,
-        }))
-      }
-      if (result.vars) {
-        setVars(v => ({ ...v, ...result.vars }))
-      }
-    } catch (err) {
-      setError(err.message || 'Erro ao gerar conversa')
-    } finally {
-      setGenerating(false)
-    }
-  }, [apiKey, prompt])
 
   const handleExport = useCallback(async () => {
     const { default: html2canvas } = await import('html2canvas')
@@ -82,31 +88,25 @@ export default function App() {
     }
   }, [])
 
-  // Active messages: generated ones take priority over template
-  const activeMessages = generatedMessages ?? TEMPLATES[selectedTemplate]?.messages ?? []
-
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#111113' }}>
 
       {/* Left panel */}
       <div style={{ width: '320px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C1C1E' }}>
         <ConfigPanel
-          prompt={prompt}
-          onPromptChange={setPrompt}
-          generating={generating}
-          onGenerate={handleGenerate}
-          selectedTemplate={selectedTemplate}
-          onSelectTemplate={handleSelectTemplate}
+          selectedSegment={selectedSegment}
+          onSelectSegment={handleSelectSegment}
+          selectedType={selectedType}
+          onSelectType={handleSelectType}
+          messages={messages}
+          onMessagesChange={setMessages}
           brand={brand}
           onBrandChange={handleBrandChange}
           vars={vars}
           onVarsChange={setVars}
           dark={dark}
           onDarkChange={setDark}
-          apiKey={apiKey}
-          onApiKeyChange={setApiKey}
           onExport={handleExport}
-          error={error}
         />
       </div>
 
@@ -140,26 +140,39 @@ export default function App() {
         <div ref={phoneRef} style={{ position: 'relative', zIndex: 10 }}>
           <PhoneMockup
             brand={brand}
-            messages={activeMessages}
+            messages={messages}
             dark={dark}
             vars={{ ...vars, brand: brand.name }}
           />
         </div>
 
-        {/* Status pill */}
-        {generatedMessages && (
-          <div
-            style={{
-              position: 'absolute', top: '16px', right: '16px',
-              background: '#1A3A22', border: '1px solid #25D366',
-              borderRadius: '20px', padding: '6px 12px',
-              display: 'flex', alignItems: 'center', gap: '6px',
-            }}
-          >
-            <div className="pulse-dot" style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#25D366' }}/>
-            <span style={{ color: '#4ADE80', fontSize: '12px', fontWeight: '500' }}>Gerado por Claude AI</span>
-          </div>
-        )}
+        {/* Template pill */}
+        {(() => {
+          const seg = SEGMENT_MAP[selectedSegment]
+          const type = TYPES.find(t => t.id === selectedType)
+          if (!seg || !type) return null
+          return (
+            <div
+              className="no-export"
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: '#1A1A2E', border: `1px solid ${type.color}40`,
+                borderRadius: '20px', padding: '6px 12px',
+                display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <span style={{ fontSize: '13px' }}>{seg.emoji}</span>
+              <span style={{ color: '#D1D5DB', fontSize: '11.5px', fontWeight: '500' }}>
+                {seg.label}
+              </span>
+              <span style={{ color: '#4B5563', fontSize: '11px' }}>·</span>
+              <span style={{ fontSize: '13px' }}>{type.icon}</span>
+              <span style={{ color: '#D1D5DB', fontSize: '11.5px', fontWeight: '500' }}>
+                {type.name}
+              </span>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )
