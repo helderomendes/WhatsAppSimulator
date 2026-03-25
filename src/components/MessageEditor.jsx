@@ -5,14 +5,17 @@ import {
   UploadSimple,
 } from '@phosphor-icons/react'
 
+const B   = '#1877F2'
+const B_LT = '#60A5FA'
+
 const TYPE_ICON_EL = {
-  text:      <ChatCircleText size={14} weight="fill" color="#60A5FA" />,
-  image:     <Image size={14} weight="fill" color="#A78BFA" />,
-  carousel:  <SquaresFour size={14} weight="fill" color="#34D399" />,
-  buttons:   <ToggleLeft size={14} weight="fill" color="#FBBF24" />,
-  cta:       <Link size={14} weight="bold" color="#F472B6" />,
-  separator: <Minus size={14} weight="bold" color="#9CA3AF" />,
-  unread:    <BellRinging size={14} weight="fill" color="#F87171" />,
+  text:      <ChatCircleText size={14} weight="fill" color={B_LT} />,
+  image:     <Image         size={14} weight="fill" color={B_LT} />,
+  carousel:  <SquaresFour   size={14} weight="fill" color={B_LT} />,
+  buttons:   <ToggleLeft    size={14} weight="fill" color={B_LT} />,
+  cta:       <Link          size={14} weight="bold" color={B_LT} />,
+  separator: <Minus         size={14} weight="bold" color="#4B5563" />,
+  unread:    <BellRinging   size={14} weight="fill" color={B_LT} />,
 }
 
 const TYPE_LABELS = {
@@ -23,9 +26,10 @@ const TYPE_LABELS = {
 const ADDABLE_TYPES = ['text', 'image', 'carousel', 'buttons', 'cta', 'separator', 'unread']
 
 const inputStyle = {
-  width: '100%', background: '#1C1C1E', color: '#F2F2F7', fontSize: '12px',
-  borderRadius: '7px', padding: '7px 10px', border: '1px solid #3C3C3E',
+  width: '100%', background: '#0D0D0F', color: '#E5E7EB', fontSize: '12px',
+  borderRadius: '7px', padding: '7px 10px', border: '1px solid #1C1C1E',
   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
+  transition: 'border-color 0.15s',
 }
 
 const labelStyle = { display: 'block', color: '#9CA3AF', fontSize: '10.5px', marginBottom: '3px' }
@@ -195,7 +199,7 @@ function CarouselEditor({ msg, onChange }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {cards.map((card, i) => (
-        <div key={i} style={{ background: '#1C1C1E', borderRadius: '8px', padding: '8px', border: '1px solid #3C3C3E' }}>
+        <div key={i} style={{ background: '#0D0D0F', borderRadius: '8px', padding: '8px', border: '1px solid #1C1C1E' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
             <span style={{ color: '#9CA3AF', fontSize: '10.5px', fontWeight: '600' }}>Card {i + 1}</span>
             <SmallBtn onClick={() => removeCard(i)} color="#EF4444"><X size={12} weight="bold" /></SmallBtn>
@@ -241,7 +245,7 @@ function CarouselEditor({ msg, onChange }) {
       ))}
       <button
         onClick={addCard}
-        style={{ background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar card
       </button>
@@ -270,7 +274,7 @@ function ButtonsEditor({ msg, onChange }) {
         </div>
       ))}
       <button onClick={addBtn}
-        style={{ background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar botão
       </button>
@@ -426,9 +430,9 @@ export default function MessageEditor({ messages, onChange }) {
         const expanded = expandedId === msg.id
         return (
           <div key={msg.id} style={{
-            background: expanded ? '#232325' : '#1C1C1E',
+            background: expanded ? '#111113' : '#0D0D0F',
             borderRadius: '9px',
-            border: `1px solid ${expanded ? '#3C3C3E' : '#2C2C2E'}`,
+            border: `1px solid ${expanded ? '#1877F250' : '#111113'}`,
             overflow: 'hidden',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 8px 8px 10px', cursor: 'pointer' }}
@@ -448,7 +452,7 @@ export default function MessageEditor({ messages, onChange }) {
               </span>
             </div>
             {expanded && (
-              <div style={{ borderTop: '1px solid #2C2C2E', padding: '10px' }}>
+              <div style={{ borderTop: '1px solid #111113', padding: '10px' }}>
                 {renderEditor(msg)}
               </div>
             )}
@@ -457,7 +461,7 @@ export default function MessageEditor({ messages, onChange }) {
       })}
 
       {showTypePicker ? (
-        <div style={{ background: '#2C2C2E', borderRadius: '10px', padding: '10px', border: '1px solid #3C3C3E' }}>
+        <div style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px', border: '1px solid #1C1C1E' }}>
           <div style={{ color: '#9CA3AF', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
             Tipo de mensagem
           </div>
@@ -465,7 +469,7 @@ export default function MessageEditor({ messages, onChange }) {
             {ADDABLE_TYPES.map(t => (
               <button key={t} onClick={() => addMsg(t)} style={{
                 display: 'flex', alignItems: 'center', gap: '7px',
-                background: '#1C1C1E', color: '#E9EDEF', border: '1px solid #3C3C3E',
+                background: '#111113', color: '#9CA3AF', border: '1px solid #1C1C1E',
                 borderRadius: '7px', padding: '7px 9px', cursor: 'pointer', fontSize: '12px',
               }}>
                 <span style={{ display: 'flex' }}>{TYPE_ICON_EL[t] || <Minus size={14} />}</span>
@@ -480,7 +484,7 @@ export default function MessageEditor({ messages, onChange }) {
         </div>
       ) : (
         <button onClick={() => setShowTypePicker(true)} style={{
-          background: '#2C2C2E', color: '#1877F2', border: '1px dashed #1877F250',
+          background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F250',
           borderRadius: '9px', padding: '9px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', marginTop: '2px',
         }}>
           + Adicionar mensagem

@@ -6,8 +6,8 @@ const BLUE_DIM = '#1877F220'
 const BLUE_BORDER = '#1877F250'
 
 const inputStyle = {
-  width: '100%', background: '#181818', color: '#F2F2F7', fontSize: '13px',
-  borderRadius: '8px', padding: '8px 11px', border: '1px solid #2C2C2E',
+  width: '100%', background: '#0D0D0F', color: '#F2F2F7', fontSize: '13px',
+  borderRadius: '8px', padding: '8px 11px', border: '1px solid #111113',
   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
 }
 
@@ -48,7 +48,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
       {/* Save card */}
-      <div style={{ background: '#181818', borderRadius: '10px', padding: '12px', border: '1px solid #1C1C1E' }}>
+      <div style={{ background: '#0D0D0F', borderRadius: '10px', padding: '12px', border: '1px solid #111113' }}>
         <div style={{ color: '#4B5563', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
           Salvar conversa atual
         </div>
@@ -93,7 +93,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
             Salvos ({templates.length})
           </div>
           {templates.map(tpl => (
-            <div key={tpl.id} style={{ background: '#181818', borderRadius: '10px', padding: '10px 12px', border: '1px solid #1C1C1E' }}>
+            <div key={tpl.id} style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px 12px', border: '1px solid #111113' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ color: '#F2F2F7', fontSize: '13px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -118,7 +118,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
                       </button>
                       <button
                         onClick={() => setConfirmDelete(null)}
-                        style={{ background: '#1C1C1E', color: '#9CA3AF', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px' }}
+                        style={{ background: '#111113', color: '#9CA3AF', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px' }}
                       >
                         Cancelar
                       </button>

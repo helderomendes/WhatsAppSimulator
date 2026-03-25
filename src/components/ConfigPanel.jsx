@@ -3,34 +3,50 @@ import {
   SquaresFour, PencilSimple, BookmarkSimple,
   Gear, Moon, Sun, SealCheck, Storefront, UploadSimple,
   ArrowLineDown, User, Tag, Percent, Package, Star,
-  ArrowCounterClockwise, Check, Phone, X,
+  ArrowCounterClockwise, Check, Phone, Rocket,
+  Sparkle, TShirt, Flower, Lightning, CoatHanger, Diamond, Barbell, ShoppingBag,
+  ArrowsClockwise, SealPercent, GridFour,
 } from '@phosphor-icons/react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
 import MessageEditor from './MessageEditor'
 import CustomTemplatesTab from './CustomTemplatesTab'
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
-const BLUE = '#1877F2'          // Meta blue – single accent color
-const BLUE_DIM = '#1877F220'    // 12 % opacity tint for active backgrounds
-const BLUE_BORDER = '#1877F250' // 31 % opacity for active borders
-const BLUE_MUTED = '#4B78C0'    // disabled / subtle blue text
+// ─── Design tokens ─────────────────────────────────────────────────────────────
+const B   = '#1877F2'        // Meta blue — single accent
+const B10 = '#1877F21A'      // 10 % tint (hover / active bg)
+const B20 = '#1877F233'      // 20 % tint (pressed bg)
+const B50 = '#1877F280'      // 50 % (active border)
+const B_LT = '#60A5FA'       // blue-400 (icon secondary)
+const B_XL = '#93C5FD'       // blue-300 (active text)
 
-// Phosphor icon per conversation type
-const TYPE_ICONS_PH = {
-  nps:          <Star          size={17} weight="fill"   color="#F59E0B" />,
-  carousel:     <SquaresFour   size={17} weight="fill"   color="#10B981" />,
-  reactivation: <ArrowCounterClockwise size={17} weight="bold" color="#8B5CF6" />,
-  promotion:    <Tag           size={17} weight="fill"   color="#EF4444" />,
-  repurchase:   <Package       size={17} weight="fill"   color="#06B6D4" />,
-  launch:       <Star          size={17} weight="duotone" color="#F97316" />,
+// ─── Segment → Phosphor icon ────────────────────────────────────────────────
+const SEG_ICONS = {
+  beauty:        <Sparkle    size={16} weight="fill" color={B_LT} />,
+  mens_fashion:  <TShirt     size={16} weight="fill" color={B_LT} />,
+  womens_fashion:<Flower     size={16} weight="fill" color={B_LT} />,
+  streetwear:    <Lightning  size={16} weight="fill" color={B_LT} />,
+  fashion:       <CoatHanger size={16} weight="fill" color={B_LT} />,
+  accessories:   <Diamond    size={16} weight="fill" color={B_LT} />,
+  fitness:       <Barbell    size={16} weight="fill" color={B_LT} />,
+  retail:        <ShoppingBag size={16} weight="fill" color={B_LT} />,
 }
 
-// ─── Small reusable components ────────────────────────────────────────────────
+// ─── Type → Phosphor icon (all blue family) ─────────────────────────────────
+const TYPE_ICONS = {
+  nps:          <Star               size={16} weight="fill"    color={B} />,
+  carousel:     <GridFour           size={16} weight="fill"    color={B} />,
+  reactivation: <ArrowsClockwise    size={16} weight="bold"    color={B} />,
+  promotion:    <SealPercent        size={16} weight="fill"    color={B} />,
+  repurchase:   <ArrowCounterClockwise size={16} weight="bold" color={B} />,
+  launch:       <Rocket             size={16} weight="fill"    color={B} />,
+}
+
+// ─── Sub-components ─────────────────────────────────────────────────────────
 function Toggle({ label, icon, checked, onChange }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0' }}>
-      <span style={{ display: 'flex', alignItems: 'center', gap: '7px', color: '#D1D5DB', fontSize: '13px' }}>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#9CA3AF', fontSize: '12.5px' }}>
         {icon}
         {label}
       </span>
@@ -38,16 +54,16 @@ function Toggle({ label, icon, checked, onChange }) {
         onClick={() => onChange(!checked)}
         style={{
           position: 'relative', width: '42px', height: '23px',
-          borderRadius: '12px', background: checked ? BLUE : '#3A3A3C',
+          borderRadius: '12px', background: checked ? B : '#28282C',
           border: 'none', cursor: 'pointer', transition: 'background 0.2s', flexShrink: 0,
         }}
       >
         <div style={{
           position: 'absolute', top: '2px', width: '19px', height: '19px',
-          borderRadius: '50%', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.35)',
+          borderRadius: '50%', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
           transition: 'transform 0.2s',
           transform: checked ? 'translateX(21px)' : 'translateX(2px)',
-        }}/>
+        }} />
       </button>
     </div>
   )
@@ -56,7 +72,7 @@ function Toggle({ label, icon, checked, onChange }) {
 function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
   return (
     <div style={{ marginBottom: '8px' }}>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6B7280', fontSize: '11px', marginBottom: '4px' }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#4B5563', fontSize: '10.5px', marginBottom: '4px', fontWeight: '500' }}>
         {icon}
         {label}
       </label>
@@ -66,12 +82,12 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          width: '100%', background: '#232326', color: '#F2F2F7', fontSize: '13px',
-          borderRadius: '8px', padding: '7px 11px', border: '1px solid #2C2C2E',
-          outline: 'none', boxSizing: 'border-box',
+          width: '100%', background: '#0D0D0F', color: '#E5E7EB', fontSize: '12.5px',
+          borderRadius: '8px', padding: '7px 11px', border: '1px solid #1C1C1E',
+          outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s',
         }}
-        onFocus={e => e.target.style.borderColor = BLUE}
-        onBlur={e => e.target.style.borderColor = '#2C2C2E'}
+        onFocus={e => e.target.style.borderColor = B}
+        onBlur={e => e.target.style.borderColor = '#1C1C1E'}
       />
     </div>
   )
@@ -80,16 +96,20 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
 function SectionLabel({ title }) {
   return (
     <div style={{
-      color: '#4B5563', fontSize: '10px', fontWeight: '700',
-      letterSpacing: '0.1em', textTransform: 'uppercase',
-      marginBottom: '7px', paddingLeft: '1px',
+      color: '#374151', fontSize: '9.5px', fontWeight: '700',
+      letterSpacing: '0.12em', textTransform: 'uppercase',
+      marginBottom: '8px',
     }}>
       {title}
     </div>
   )
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+function Divider() {
+  return <div style={{ height: '1px', background: '#111113', margin: '10px 0' }} />
+}
+
+// ─── Main export ─────────────────────────────────────────────────────────────
 export default function ConfigPanel({
   selectedSegment, onSelectSegment,
   selectedType, onSelectType,
@@ -112,17 +132,17 @@ export default function ConfigPanel({
     reader.readAsDataURL(file)
   }
 
-  const tabBtn = (id, icon, label, badge) => {
+  const TabBtn = ({ id, icon, label, badge }) => {
     const active = tab === id
     return (
       <button
         onClick={() => setTab(id)}
         style={{
-          flex: 1, height: '32px', border: 'none', cursor: 'pointer',
-          borderRadius: '7px', fontSize: '11px', fontWeight: '600',
-          background: active ? BLUE_DIM : 'transparent',
-          color: active ? BLUE : '#6B7280',
-          borderBottom: active ? `2px solid ${BLUE}` : '2px solid transparent',
+          flex: 1, height: '34px', border: 'none', cursor: 'pointer',
+          borderRadius: '8px', fontSize: '11px', fontWeight: active ? '700' : '500',
+          background: active ? B10 : 'transparent',
+          color: active ? B : '#4B5563',
+          outline: 'none',
           transition: 'all 0.15s',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
         }}
@@ -130,66 +150,69 @@ export default function ConfigPanel({
         {icon}
         {label}
         {badge
-          ? <span style={{ background: BLUE, color: 'white', borderRadius: '9px', fontSize: '9.5px', padding: '0 5px', lineHeight: '16px', fontWeight: '700' }}>{badge}</span>
+          ? <span style={{ background: B, color: 'white', borderRadius: '9px', fontSize: '9px', padding: '1px 5px', fontWeight: '700', lineHeight: '14px' }}>{badge}</span>
           : null}
       </button>
     )
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#111113' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#0A0A0C', borderRight: '1px solid #111113' }}>
 
-      {/* ── Header ── */}
-      <div style={{ padding: '13px 16px', borderBottom: '1px solid #1C1C1E', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid #111113', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <div style={{
-          width: '30px', height: '30px', borderRadius: '9px', background: BLUE,
+          width: '32px', height: '32px', borderRadius: '10px',
+          background: `linear-gradient(135deg, ${B} 0%, #0D5FCC 100%)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          boxShadow: `0 2px 8px ${B}40`,
         }}>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
+          {/* WhatsApp logo mark */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
             <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.005c6.554 0 11.89-5.335 11.893-11.893a11.772 11.772 0 00-3.423-8.453zm-8.475 18.304h-.004a9.88 9.88 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/>
           </svg>
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ color: '#F2F2F7', fontSize: '14px', fontWeight: '700', letterSpacing: '-0.01em' }}>WA Simulator</div>
-          <div style={{ color: '#4B5563', fontSize: '10.5px' }}>WhatsApp Business</div>
+          <div style={{ color: '#F9FAFB', fontSize: '13.5px', fontWeight: '700', letterSpacing: '-0.01em' }}>WA Simulator</div>
+          <div style={{ color: '#374151', fontSize: '10px', marginTop: '1px' }}>WhatsApp Business</div>
         </div>
         <button
           onClick={() => setShowSettings(s => !s)}
-          style={{ color: showSettings ? BLUE : '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}
+          style={{ color: showSettings ? B : '#374151', background: 'none', border: 'none', cursor: 'pointer', padding: '5px', display: 'flex', borderRadius: '7px', transition: 'color 0.15s' }}
           title="Configurações"
         >
-          <Gear size={18} weight={showSettings ? 'fill' : 'regular'} />
+          <Gear size={17} weight={showSettings ? 'fill' : 'regular'} />
         </button>
       </div>
 
-      {/* ── Settings drawer ── */}
+      {/* ── Settings drawer ─────────────────────────────────────────────────── */}
       {showSettings && (
-        <div style={{ padding: '14px 16px', background: '#0D0D0F', borderBottom: '1px solid #1C1C1E' }}>
+        <div style={{ padding: '14px 16px', background: '#080809', borderBottom: '1px solid #111113', overflowY: 'auto' }}>
 
-          {/* Logo upload */}
+          {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
             <div
               onClick={() => fileRef.current?.click()}
               style={{
-                width: '46px', height: '46px', borderRadius: '50%',
-                background: brand.avatarColor || '#1C1C1E',
-                border: `2px dashed ${brand.logo ? 'transparent' : '#2C2C2E'}`,
+                width: '44px', height: '44px', borderRadius: '50%',
+                background: brand.avatarColor || '#111113',
+                border: `1.5px dashed ${brand.logo ? 'transparent' : '#1C1C1E'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', overflow: 'hidden', flexShrink: 0,
               }}
             >
               {brand.logo
                 ? <img src={brand.logo} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <UploadSimple size={18} color="#6B7280" />}
+                : <UploadSimple size={17} color="#374151" />}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
               <button onClick={() => fileRef.current?.click()}
-                style={{ color: BLUE, fontSize: '12px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', fontWeight: '500' }}>
+                style={{ color: B, fontSize: '11.5px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', fontWeight: '600' }}>
                 {brand.logo ? 'Trocar logo' : 'Upload logo'}
               </button>
               {brand.logo && (
                 <button onClick={() => onBrandChange({ ...brand, logo: null })}
-                  style={{ color: '#EF4444', fontSize: '11px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>
+                  style={{ color: '#EF4444', fontSize: '10.5px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>
                   Remover
                 </button>
               )}
@@ -197,46 +220,49 @@ export default function ConfigPanel({
             <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
           </div>
 
-          <Field label="Nome da Marca"   icon={<Storefront size={11} />} value={brand.name}     onChange={v => onBrandChange({ ...brand, name: v })}  placeholder="Ex: Glow Beauty" />
-          <Field label="Telefone"        icon={<Phone size={11} />}      value={brand.phone || ''} onChange={v => onBrandChange({ ...brand, phone: v })} placeholder="+55 11 9999-9999" />
-          <Toggle label="Badge Verificado"  icon={<SealCheck size={14} color={BLUE} />}          checked={!!brand.verified}     onChange={v => onBrandChange({ ...brand, verified: v })} />
-          <Toggle label="Conta Comercial"   icon={<Storefront size={14} color="#6B7280" />}      checked={!!brand.isCommercial} onChange={v => onBrandChange({ ...brand, isCommercial: v })} />
+          <SectionLabel title="Marca" />
+          <Field label="Nome"     icon={<Storefront size={10} color="#4B5563" />} value={brand.name}      onChange={v => onBrandChange({ ...brand, name: v })}  placeholder="Ex: Glow Beauty" />
+          <Field label="Telefone" icon={<Phone      size={10} color="#4B5563" />} value={brand.phone||''} onChange={v => onBrandChange({ ...brand, phone: v })} placeholder="+55 11 9999-9999" />
+          <Toggle label="Badge Verificado"  icon={<SealCheck  size={13} color={B}        />} checked={!!brand.verified}     onChange={v => onBrandChange({ ...brand, verified: v })} />
+          <Toggle label="Conta Comercial"   icon={<Storefront size={13} color="#4B5563"  />} checked={!!brand.isCommercial} onChange={v => onBrandChange({ ...brand, isCommercial: v })} />
 
-          <div style={{ height: '1px', background: '#1C1C1E', margin: '10px 0' }} />
-
+          <Divider />
           <SectionLabel title="Variáveis" />
-          <Field label="{nome}"      icon={<User    size={11} />} value={vars.nome    || ''} onChange={v => onVarsChange({ ...vars, nome: v })}     placeholder="Nome do cliente" />
-          <Field label="{coupon}"    icon={<Tag     size={11} />} value={vars.coupon  || ''} onChange={v => onVarsChange({ ...vars, coupon: v })}   placeholder="Código do cupom" />
-          <Field label="{discount}"  icon={<Percent size={11} />} value={vars.discount|| ''} onChange={v => onVarsChange({ ...vars, discount: v })} placeholder="% de desconto" />
-          <Field label="{product}"   icon={<Package size={11} />} value={vars.product || ''} onChange={v => onVarsChange({ ...vars, product: v })}  placeholder="Nome do produto" />
-          <Field label="{fan_name}"  icon={<Star    size={11} />} value={vars.fan_name|| ''} onChange={v => onVarsChange({ ...vars, fan_name: v })} placeholder="Nome do fã" />
+          <Field label="{nome}"     icon={<User    size={10} color="#4B5563" />} value={vars.nome    ||''} onChange={v => onVarsChange({ ...vars, nome: v })}     placeholder="Nome do cliente" />
+          <Field label="{coupon}"   icon={<Tag     size={10} color="#4B5563" />} value={vars.coupon  ||''} onChange={v => onVarsChange({ ...vars, coupon: v })}   placeholder="Código do cupom" />
+          <Field label="{discount}" icon={<Percent size={10} color="#4B5563" />} value={vars.discount||''} onChange={v => onVarsChange({ ...vars, discount: v })} placeholder="% de desconto" />
+          <Field label="{product}"  icon={<Package size={10} color="#4B5563" />} value={vars.product ||''} onChange={v => onVarsChange({ ...vars, product: v })}  placeholder="Nome do produto" />
+          <Field label="{fan_name}" icon={<Star    size={10} color="#4B5563" />} value={vars.fan_name||''} onChange={v => onVarsChange({ ...vars, fan_name: v })} placeholder="Nome do fã" />
 
-          <div style={{ height: '1px', background: '#1C1C1E', margin: '10px 0' }} />
+          <Divider />
           <Toggle
             label="Modo Escuro"
-            icon={dark ? <Moon size={14} weight="fill" color={BLUE} /> : <Sun size={14} color="#F59E0B" />}
+            icon={dark
+              ? <Moon size={13} weight="fill" color={B} />
+              : <Sun  size={13} weight="bold"  color="#F59E0B" />}
             checked={dark}
             onChange={onDarkChange}
           />
         </div>
       )}
 
-      {/* ── Tab bar ── */}
-      <div style={{ display: 'flex', padding: '6px 10px', gap: '2px', background: '#111113', borderBottom: '1px solid #1C1C1E' }}>
-        {tabBtn('templates', <SquaresFour  size={13} weight={tab === 'templates' ? 'fill' : 'regular'} />, 'Templates')}
-        {tabBtn('editor',    <PencilSimple size={13} weight={tab === 'editor'    ? 'fill' : 'regular'} />, 'Editor')}
-        {tabBtn('saved',     <BookmarkSimple size={13} weight={tab === 'saved'   ? 'fill' : 'regular'} />, 'Salvos', customTemplates?.length || null)}
+      {/* ── Tab bar ─────────────────────────────────────────────────────────── */}
+      <div style={{ display: 'flex', padding: '6px 8px', gap: '2px', background: '#0A0A0C', borderBottom: '1px solid #111113' }}>
+        <TabBtn id="templates" label="Templates" icon={<SquaresFour  size={13} weight={tab==='templates'?'fill':'regular'} />} />
+        <TabBtn id="editor"    label="Editor"    icon={<PencilSimple size={13} weight={tab==='editor'   ?'fill':'regular'} />} />
+        <TabBtn id="saved"     label="Salvos"    icon={<BookmarkSimple size={13} weight={tab==='saved'  ?'fill':'regular'} />} badge={customTemplates?.length||null} />
       </div>
 
-      {/* ── Tab content ── */}
+      {/* ── Tab content ─────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '14px' }}>
 
-        {/* ── TEMPLATES tab ── */}
+        {/* TEMPLATES */}
         {tab === 'templates' && (
           <>
+            {/* Segment grid */}
             <div style={{ marginBottom: '16px' }}>
               <SectionLabel title="Segmento" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                 {SEGMENTS.map(seg => {
                   const active = selectedSegment === seg.id
                   return (
@@ -244,15 +270,21 @@ export default function ConfigPanel({
                       key={seg.id}
                       onClick={() => onSelectSegment(seg.id)}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '7px',
+                        display: 'flex', alignItems: 'center', gap: '8px',
                         padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
-                        border: active ? `1.5px solid ${BLUE}` : '1.5px solid #1C1C1E',
-                        background: active ? BLUE_DIM : '#181818',
+                        border: `1px solid ${active ? B50 : '#111113'}`,
+                        background: active ? B10 : '#0D0D0F',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ fontSize: '14px', flexShrink: 0 }}>{seg.emoji}</span>
-                      <span style={{ color: active ? '#93C5FD' : '#9CA3AF', fontSize: '11px', fontWeight: active ? '600' : '400', lineHeight: '1.3' }}>
+                      <span style={{ flexShrink: 0, opacity: active ? 1 : 0.5 }}>
+                        {SEG_ICONS[seg.id]}
+                      </span>
+                      <span style={{
+                        color: active ? B_XL : '#6B7280',
+                        fontSize: '10.5px', fontWeight: active ? '600' : '400',
+                        lineHeight: '1.35', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>
                         {seg.label}
                       </span>
                     </button>
@@ -261,9 +293,10 @@ export default function ConfigPanel({
               </div>
             </div>
 
+            {/* Type list */}
             <div style={{ marginBottom: '16px' }}>
               <SectionLabel title="Tipo de conversa" />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                 {TYPES.map(t => {
                   const active = selectedType === t.id
                   return (
@@ -273,36 +306,44 @@ export default function ConfigPanel({
                       style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
                         padding: '8px 11px', borderRadius: '9px', textAlign: 'left',
-                        border: active ? `1.5px solid ${BLUE}` : '1.5px solid #1C1C1E',
-                        background: active ? BLUE_DIM : '#181818',
+                        border: `1px solid ${active ? B50 : '#111113'}`,
+                        background: active ? B10 : '#0D0D0F',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ flexShrink: 0 }}>{TYPE_ICONS_PH[t.id] || <SquaresFour size={17} />}</span>
+                      <span style={{ flexShrink: 0, opacity: active ? 1 : 0.4 }}>
+                        {TYPE_ICONS[t.id]}
+                      </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ color: active ? '#DBEAFE' : '#D1D5DB', fontSize: '12px', fontWeight: '600' }}>{t.name}</div>
-                        <div style={{ color: '#4B5563', fontSize: '10.5px', marginTop: '1px' }}>{t.desc}</div>
+                        <div style={{ color: active ? B_XL : '#9CA3AF', fontSize: '12px', fontWeight: active ? '600' : '400' }}>{t.name}</div>
+                        <div style={{ color: '#374151', fontSize: '10px', marginTop: '1px' }}>{t.desc}</div>
                       </div>
-                      {active && <Check size={13} color={BLUE} weight="bold" />}
+                      {active && <Check size={12} color={B} weight="bold" />}
                     </button>
                   )
                 })}
               </div>
             </div>
 
+            {/* Active template pill */}
             {selectedSegment && selectedType && (() => {
               const seg = SEGMENTS.find(s => s.id === selectedSegment)
               const type = TYPES.find(t => t.id === selectedType)
               return (
-                <div style={{ background: BLUE_DIM, borderRadius: '10px', padding: '10px 12px', border: `1px solid ${BLUE_BORDER}` }}>
-                  <div style={{ color: '#93C5FD', fontSize: '11.5px', fontWeight: '600', marginBottom: '3px' }}>
-                    {seg?.emoji} {seg?.label} · {type?.name}
+                <div style={{ background: B10, borderRadius: '10px', padding: '10px 12px', border: `1px solid ${B20}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <span style={{ opacity: 0.8 }}>{SEG_ICONS[seg?.id]}</span>
+                    <span style={{ color: B_XL, fontSize: '11.5px', fontWeight: '600' }}>{seg?.label} · {type?.name}</span>
                   </div>
                   <div style={{ color: '#4B5563', fontSize: '10.5px' }}>
-                    Marca: <span style={{ color: '#9CA3AF' }}>{seg?.brand}</span> · Cliente: <span style={{ color: '#9CA3AF' }}>{seg?.customer}</span>
+                    Marca: <span style={{ color: '#6B7280' }}>{seg?.brand}</span>
+                    <span style={{ margin: '0 4px', color: '#1C1C1E' }}>·</span>
+                    Cliente: <span style={{ color: '#6B7280' }}>{seg?.customer}</span>
                   </div>
                   <div style={{ color: '#4B5563', fontSize: '10.5px', marginTop: '2px' }}>
-                    Cupom: <span style={{ color: '#9CA3AF' }}>{seg?.coupon}</span> · Desconto: <span style={{ color: '#9CA3AF' }}>{seg?.discount}%</span>
+                    Cupom: <span style={{ color: '#6B7280' }}>{seg?.coupon}</span>
+                    <span style={{ margin: '0 4px', color: '#1C1C1E' }}>·</span>
+                    Desconto: <span style={{ color: '#6B7280' }}>{seg?.discount}%</span>
                   </div>
                 </div>
               )
@@ -310,12 +351,10 @@ export default function ConfigPanel({
           </>
         )}
 
-        {/* ── EDITOR tab ── */}
         {tab === 'editor' && (
           <MessageEditor messages={messages} onChange={onMessagesChange} />
         )}
 
-        {/* ── SAVED tab ── */}
         {tab === 'saved' && (
           <CustomTemplatesTab
             templates={customTemplates || []}
@@ -329,19 +368,20 @@ export default function ConfigPanel({
         )}
       </div>
 
-      {/* ── Export footer ── */}
-      <div style={{ padding: '10px 14px', borderTop: '1px solid #1C1C1E' }}>
+      {/* ── Export ──────────────────────────────────────────────────────────── */}
+      <div style={{ padding: '10px 14px', borderTop: '1px solid #111113' }}>
         <button
           onClick={onExport}
           style={{
             width: '100%', height: '38px', borderRadius: '9px',
-            background: BLUE, color: 'white', fontWeight: '700', fontSize: '13px',
+            background: `linear-gradient(135deg, ${B} 0%, #0D5FCC 100%)`,
+            color: 'white', fontWeight: '700', fontSize: '12.5px',
             border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-            letterSpacing: '0.01em',
+            boxShadow: `0 2px 10px ${B}40`,
           }}
         >
-          <ArrowLineDown size={16} weight="bold" />
+          <ArrowLineDown size={15} weight="bold" />
           Exportar PNG
         </button>
       </div>
