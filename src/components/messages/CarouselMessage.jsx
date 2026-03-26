@@ -11,7 +11,7 @@ function Card({ card, dark, flat }) {
     <div
       className="flex-shrink-0 overflow-hidden"
       style={{
-        width: flat ? '100%' : '210px',
+        width: flat ? 'calc(50% - 5px)' : '210px',
         borderRadius: '10px',
         background: cardBg,
         boxShadow: dark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.12)',
@@ -68,15 +68,35 @@ function Card({ card, dark, flat }) {
 }
 
 export default function CarouselMessage({ msg, dark, flat }) {
-  return (
-    <div className={`flex mb-1 px-2 msg-anim ${flat ? '' : 'justify-start'}`} style={flat ? { display: 'block' } : {}}>
-      <div style={{ maxWidth: flat ? '100%' : '92%', width: flat ? '100%' : undefined }}>
+  if (flat) {
+    // Export mode: 2-column grid, all cards visible
+    return (
+      <div className="mb-2 px-2 msg-anim">
         <div
-          className={flat ? 'flex flex-col gap-2.5 pb-1' : 'flex gap-2.5 overflow-x-auto pb-1 carousel-scroll'}
-          style={{ paddingRight: '4px' }}
+          className="flex flex-wrap gap-2.5 pb-1"
+          style={{ width: '100%' }}
         >
           {msg.cards.map((card, i) => (
-            <Card key={i} card={card} dark={dark} flat={flat} />
+            <Card key={i} card={card} dark={dark} flat />
+          ))}
+        </div>
+        <div className="px-0.5 mt-1">
+          <span style={{ color: dark ? '#8696A0' : '#667781', fontSize: '11px' }}>{msg.time}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Live mode: full-width, horizontal scroll, 1.5 cards visible (peek effect)
+  return (
+    <div className="mb-1 msg-anim" style={{ paddingLeft: '8px' }}>
+      <div style={{ width: '100%' }}>
+        <div
+          className="flex gap-2.5 pb-1 carousel-scroll"
+          style={{ overflowX: 'auto', overflowY: 'visible' }}
+        >
+          {msg.cards.map((card, i) => (
+            <Card key={i} card={card} dark={dark} />
           ))}
         </div>
         <div className="mt-1 px-0.5">
