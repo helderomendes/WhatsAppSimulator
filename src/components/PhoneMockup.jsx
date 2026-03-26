@@ -47,31 +47,16 @@ export default function PhoneMockup({ brand, messages, dark, vars, wallpaper }) 
   const now  = new Date()
   const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`
 
-  const frameColor = '#1C1C1E'
-  const frameSide  = '#2C2C2E'
-
   return (
     <div
-      className="relative"
+      className="relative overflow-hidden"
       style={{
-        width: '375px', height: '790px', borderRadius: '52px',
-        background: `linear-gradient(160deg, #3A3A3C 0%, ${frameColor} 40%, #2A2A2C 100%)`,
-        padding: '13px', boxSizing: 'border-box',
-        boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.15)',
+        width: '375px', height: '790px',
+        borderRadius: '12px',
+        background: dark ? '#0B141A' : '#F0F2F5',
+        boxShadow: '0 24px 48px rgba(0,0,0,0.5)',
       }}
     >
-      {/* Volume buttons */}
-      {[115, 160, 205].map((top, i) => (
-        <div key={i} className="absolute" style={{ left: '-3.5px', top, width: '3.5px', height: i === 0 ? 28 : 36, borderRadius: '2px 0 0 2px', background: `linear-gradient(to right, #555, ${frameSide})` }}/>
-      ))}
-      {/* Power button */}
-      <div className="absolute" style={{ right: '-3.5px', top: 165, width: '3.5px', height: 70, borderRadius: '0 2px 2px 0', background: `linear-gradient(to left, #555, ${frameSide})` }}/>
-
-      {/* ── Screen ──────────────────────────────────────────────────────── */}
-      <div
-        className="relative overflow-hidden"
-        style={{ width: '100%', height: '100%', borderRadius: '40px', background: dark ? '#0B141A' : '#F0F2F5' }}
-      >
         {/* ── Messages scroll area — fills entire screen, pads under bars ── */}
         <div
           className="absolute inset-0 overflow-y-auto chat-scroll"
@@ -147,7 +132,6 @@ export default function PhoneMockup({ brand, messages, dark, vars, wallpaper }) 
         >
           <div style={{ width: '130px', height: '5px', borderRadius: '3px', background: dark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)' }}/>
         </div>
-      </div>
     </div>
   )
 }
