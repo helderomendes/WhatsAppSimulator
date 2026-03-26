@@ -120,7 +120,7 @@ export default function App() {
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#111113' }}>
 
       {/* Left panel */}
-      <div style={{ width: '320px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C1C1E' }}>
+      <div style={{ width: '400px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C1C1E' }}>
         <ConfigPanel
           selectedSegment={selectedSegment}
           onSelectSegment={handleSelectSegment}

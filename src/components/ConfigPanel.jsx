@@ -251,7 +251,7 @@ export default function ConfigPanel({
 
           {/* Patterns */}
           <div style={{ fontSize: '9.5px', color: '#374151', fontWeight: '600', letterSpacing: '0.08em', marginBottom: '6px' }}>PADRÕES</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '5px', marginBottom: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '5px', marginBottom: '10px' }}>
             {WALLPAPERS.filter(w => w.group === 'pattern').map(w => (
               <button
                 key={w.id}
@@ -270,7 +270,7 @@ export default function ConfigPanel({
 
           {/* Gradients */}
           <div style={{ fontSize: '9.5px', color: '#374151', fontWeight: '600', letterSpacing: '0.08em', marginBottom: '6px' }}>GRADIENTES</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '5px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '5px' }}>
             {WALLPAPERS.filter(w => w.group === 'gradient').map(w => (
               <button
                 key={w.id}
@@ -297,36 +297,37 @@ export default function ConfigPanel({
       </div>
 
       {/* ── Tab content ─────────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '14px' }}>
+      <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '16px' }}>
 
         {/* TEMPLATES */}
         {tab === 'templates' && (
           <>
-            {/* Segment grid */}
+            {/* Segment grid — 4 cols tile */}
             <div style={{ marginBottom: '16px' }}>
               <SectionLabel title="Segmento" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '5px' }}>
                 {SEGMENTS.map(seg => {
                   const active = selectedSegment === seg.id
                   return (
                     <button
                       key={seg.id}
                       onClick={() => onSelectSegment(seg.id)}
+                      title={seg.label}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        gap: '5px', padding: '10px 6px 8px',
+                        borderRadius: '10px', textAlign: 'center',
                         border: `1px solid ${active ? B50 : '#111113'}`,
                         background: active ? B10 : '#0D0D0F',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ flexShrink: 0, opacity: active ? 1 : 0.5 }}>
-                        {SEG_ICONS[seg.id]}
-                      </span>
+                      <span style={{ opacity: active ? 1 : 0.45 }}>{SEG_ICONS[seg.id]}</span>
                       <span style={{
                         color: active ? B_XL : '#6B7280',
-                        fontSize: '10.5px', fontWeight: active ? '600' : '400',
-                        lineHeight: '1.35', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        fontSize: '9.5px', fontWeight: active ? '600' : '400',
+                        lineHeight: '1.2', overflow: 'hidden', textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap', width: '100%',
                       }}>
                         {seg.label}
                       </span>
@@ -336,10 +337,10 @@ export default function ConfigPanel({
               </div>
             </div>
 
-            {/* Type list */}
+            {/* Type list — 2 cols */}
             <div style={{ marginBottom: '16px' }}>
               <SectionLabel title="Tipo de conversa" />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
                 {TYPES.map(t => {
                   const active = selectedType === t.id
                   return (
@@ -347,21 +348,18 @@ export default function ConfigPanel({
                       key={t.id}
                       onClick={() => onSelectType(t.id)}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: '8px 11px', borderRadius: '9px', textAlign: 'left',
+                        display: 'flex', alignItems: 'center', gap: '8px',
+                        padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
                         border: `1px solid ${active ? B50 : '#111113'}`,
                         background: active ? B10 : '#0D0D0F',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ flexShrink: 0, opacity: active ? 1 : 0.4 }}>
-                        {TYPE_ICONS[t.id]}
-                      </span>
+                      <span style={{ flexShrink: 0, opacity: active ? 1 : 0.4 }}>{TYPE_ICONS[t.id]}</span>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ color: active ? B_XL : '#9CA3AF', fontSize: '12px', fontWeight: active ? '600' : '400' }}>{t.name}</div>
-                        <div style={{ color: '#374151', fontSize: '10px', marginTop: '1px' }}>{t.desc}</div>
+                        <div style={{ color: active ? B_XL : '#9CA3AF', fontSize: '11px', fontWeight: active ? '600' : '400', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</div>
                       </div>
-                      {active && <Check size={12} color={B} weight="bold" />}
+                      {active && <Check size={11} color={B} weight="bold" style={{ flexShrink: 0 }} />}
                     </button>
                   )
                 })}
