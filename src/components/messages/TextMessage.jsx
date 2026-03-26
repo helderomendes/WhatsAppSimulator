@@ -1,17 +1,32 @@
 import ReadReceipt from './ReadReceipt'
 import { parseWAMarkdown } from '../../utils/text'
 
+// Tail is rendered as a SIBLING *before* the bubble div so the bubble's
+// background naturally covers the inner-concave portion of the path.
 function Tail({ side, color }) {
-  if (side === 'left') {
-    return (
-      <svg className="absolute -left-[8px] bottom-0" width="8" height="13" viewBox="0 0 8 13" fill="none">
-        <path d="M8 0 L8 13 C8 13 0 10 0 6 C0 2 8 0 8 0 Z" fill={color}/>
-      </svg>
-    )
-  }
+  const isLeft = side === 'left'
+  // Left tail: outer convex curve swings left, inner concave edge dips to x=10
+  // (into bubble area). Bubble background covers x>8 automatically.
+  // Right tail: mirror image — inner concave dips to x=-2.
+  const d = isLeft
+    ? 'M 8,0 C 6,0 1,4 0,8 C 0,11 4,13 8,13 C 10,12 10,1 8,0 Z'
+    : 'M 0,0 C 2,0 7,4 8,8 C 8,11 4,13 0,13 C -2,12 -2,1 0,0 Z'
+
   return (
-    <svg className="absolute -right-[8px] bottom-0" width="8" height="13" viewBox="0 0 8 13" fill="none">
-      <path d="M0 0 L0 13 C0 13 8 10 8 6 C8 2 0 0 0 0 Z" fill={color}/>
+    <svg
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        [isLeft ? 'left' : 'right']: '-8px',
+        overflow: 'visible',
+      }}
+      width="8"
+      height="13"
+      viewBox="0 0 8 13"
+      overflow="visible"
+      fill="none"
+    >
+      <path d={d} fill={color} />
     </svg>
   )
 }
@@ -47,6 +62,9 @@ export default function TextMessage({ msg, dark, vars }) {
           </div>
         )}
 
+        {/* Tail rendered BEFORE bubble so bubble paints on top (covers inner concave) */}
+        <Tail side={isIn ? 'left' : 'right'} color={bubbleBg} />
+
         {/* Bubble */}
         <div
           className="relative shadow-sm"
@@ -56,20 +74,13 @@ export default function TextMessage({ msg, dark, vars }) {
             padding: '6px 10px 7px 10px',
           }}
         >
-          <Tail side={isIn ? 'left' : 'right'} color={bubbleBg} />
-
-            {/* Text */}
+          {/* Text */}
           <div style={{ color: textColor, fontSize: '14px', lineHeight: '1.4', wordBreak: 'break-word', paddingBottom: '2px' }}>
             <span dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.text) }} />
           </div>
 
-          {/* Meta: time + read receipt — inline, right-aligned */}
-          <div
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '3px',
-              marginTop: '2px',
-            }}
-          >
+          {/* Meta: time + read receipt */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '3px', marginTop: '2px' }}>
             <span style={{ color: timeColor, fontSize: '11px', lineHeight: 1 }}>{msg.time}</span>
             {!isIn && <ReadReceipt status={msg.status} />}
           </div>
