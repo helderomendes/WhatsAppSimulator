@@ -24,9 +24,6 @@ export default function TextMessage({ msg, dark, vars }) {
   const textColor = dark ? '#E9EDEF' : '#111B21'
   const timeColor = dark ? '#8696A0' : '#667781'
 
-  // Meta width: time (max ~32px) + gap + ticks (14px) or just time for incoming
-  const metaWidth = isIn ? 34 : 50
-
   return (
     <div className={`flex mb-0.5 px-2 msg-anim ${isIn ? 'justify-start' : 'justify-end'}`}>
       <div className="relative" style={{ maxWidth: '78%' }}>
@@ -63,22 +60,16 @@ export default function TextMessage({ msg, dark, vars }) {
         >
           <Tail side={isIn ? 'left' : 'right'} color={bubbleBg} />
 
-          {/* Text + inline float-right meta spacer */}
-          <div style={{ color: textColor, fontSize: '14px', lineHeight: '1.4', wordBreak: 'break-word' }}>
-            {/* Invisible spacer that pushes the last text line to make room for meta */}
-            <span
-              style={{ display: 'inline-block', width: `${metaWidth}px`, height: '1px', float: 'right', clear: 'both', marginLeft: '4px', marginTop: '4px' }}
-              aria-hidden="true"
-            />
+            {/* Text */}
+          <div style={{ color: textColor, fontSize: '14px', lineHeight: '1.4', wordBreak: 'break-word', paddingBottom: '2px' }}>
             <span dangerouslySetInnerHTML={{ __html: parseWAMarkdown(msg.text) }} />
           </div>
 
-          {/* Meta: time + read receipt — absolute bottom-right */}
+          {/* Meta: time + read receipt — inline, right-aligned */}
           <div
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '3px',
-              position: 'absolute', bottom: '5px', right: '8px',
-              pointerEvents: 'none',
+              marginTop: '2px',
             }}
           >
             <span style={{ color: timeColor, fontSize: '11px', lineHeight: 1 }}>{msg.time}</span>
