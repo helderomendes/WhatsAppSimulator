@@ -72,9 +72,6 @@ export default function PhoneMockup({ brand, messages, dark, vars, wallpaper }) 
         className="relative overflow-hidden"
         style={{ width: '100%', height: '100%', borderRadius: '40px', background: dark ? '#0B141A' : '#F0F2F5' }}
       >
-        {/* Dynamic Island */}
-        <div className="absolute z-30" style={{ top: '10px', left: '50%', transform: 'translateX(-50%)', width: '126px', height: '37px', borderRadius: '20px', background: '#000' }}/>
-
         {/* ── Messages scroll area — fills entire screen, pads under bars ── */}
         <div
           className="absolute inset-0 overflow-y-auto chat-scroll"
