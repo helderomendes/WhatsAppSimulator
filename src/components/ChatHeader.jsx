@@ -1,3 +1,4 @@
+import { VideoCamera, Phone, DotsThreeVertical } from '@phosphor-icons/react'
 import { stringToColor, getInitials } from '../utils/text'
 
 function VerifiedBadge() {
@@ -96,21 +97,9 @@ export default function ChatHeader({ brand, dark }) {
 
       {/* Icons */}
       <div className="flex items-center gap-4 flex-shrink-0 px-1">
-        {/* Video call */}
-        <svg width="21" height="15" viewBox="0 0 24 17" fill="none" stroke={iconColor} strokeWidth="1.7" strokeLinecap="round">
-          <rect x="1" y="1" width="15" height="15" rx="3"/>
-          <path d="M16 6l6-4v13l-6-4"/>
-        </svg>
-        {/* Phone */}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="1.7" strokeLinecap="round">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.94a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1.26h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.1-1.16a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16z"/>
-        </svg>
-        {/* Dots menu */}
-        <svg width="4" height="18" viewBox="0 0 4 18" fill={iconColor}>
-          <circle cx="2" cy="2" r="1.8"/>
-          <circle cx="2" cy="9" r="1.8"/>
-          <circle cx="2" cy="16" r="1.8"/>
-        </svg>
+        <VideoCamera size={22} color={iconColor} weight="regular" />
+        <Phone size={20} color={iconColor} weight="regular" />
+        <DotsThreeVertical size={20} color={iconColor} weight="bold" />
       </div>
     </div>
   )
