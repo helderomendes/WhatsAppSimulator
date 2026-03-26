@@ -64,7 +64,7 @@ export default function TextMessage({ msg, dark, vars }) {
           className="relative shadow-sm"
           style={{
             background: bubbleBg,
-            borderRadius: isIn ? '8px 8px 8px 0' : '8px 8px 0 8px',
+            borderRadius: '8px',
             padding: '6px 10px 7px 10px',
           }}
         >
