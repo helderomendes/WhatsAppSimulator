@@ -419,7 +419,7 @@ export default function MessageEditor({ messages, onChange }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0, width: '100%' }}>
       {messages.length === 0 && (
         <div style={{ color: '#6B7280', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>
           Nenhuma mensagem. Adicione abaixo.

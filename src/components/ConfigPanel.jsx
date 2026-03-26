@@ -159,7 +159,7 @@ export default function ConfigPanel({
   }
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#0A0A0C', borderRight: '1px solid #111113' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: '#0A0A0C', overflow: 'hidden' }}>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #111113', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -189,7 +189,7 @@ export default function ConfigPanel({
 
       {/* ── Settings drawer ─────────────────────────────────────────────────── */}
       {showSettings && (
-        <div style={{ padding: '14px 16px', background: '#080809', borderBottom: '1px solid #111113', overflowY: 'auto' }}>
+        <div style={{ padding: '14px 16px', background: '#080809', borderBottom: '1px solid #111113', overflowY: 'auto', overflowX: 'hidden' }}>
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
@@ -297,7 +297,7 @@ export default function ConfigPanel({
       </div>
 
       {/* ── Tab content ─────────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '16px' }}>
+      <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '16px', overflowX: 'hidden', minWidth: 0 }}>
 
         {/* TEMPLATES */}
         {tab === 'templates' && (
