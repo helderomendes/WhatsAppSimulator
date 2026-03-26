@@ -1,18 +1,34 @@
 import ReadReceipt from './ReadReceipt'
 import { parseWAMarkdown } from '../../utils/text'
 
-function Tail({ side, color }) {
-  if (side === 'left') {
-    return (
-      <svg className="absolute -left-[7px] bottom-0" width="7" height="12" viewBox="0 0 7 12" fill="none">
-        <path d="M7 12C7 12 0 12 0 5C0 5 0 0 7 0L7 12Z" fill={color}/>
-      </svg>
-    )
+function Tail({ side, bubbleColor, bgColor }) {
+  const isLeft = side === 'left'
+  const base = {
+    position: 'absolute',
+    zIndex: -1,
+    top: 0,
+    [isLeft ? 'left' : 'right']: '-6px',
   }
   return (
-    <svg className="absolute -right-[7px] bottom-0" width="7" height="12" viewBox="0 0 7 12" fill="none">
-      <path d="M0 12C0 12 7 12 7 5C7 5 7 0 0 0L0 12Z" fill={color}/>
-    </svg>
+    <>
+      {/* Protrusion in bubble color */}
+      <div style={{
+        ...base,
+        width: '12px',
+        borderBottom: `14px solid ${bubbleColor}`,
+        [isLeft ? 'borderTopRightRadius' : 'borderTopLeftRadius']: '8px',
+      }} />
+      {/* Cutout in chat background color */}
+      <div style={{
+        ...base,
+        [isLeft ? 'left' : 'right']: '-8px',
+        top: '-1px',
+        height: '14px',
+        width: '8px',
+        background: bgColor,
+        [isLeft ? 'borderTopRightRadius' : 'borderTopLeftRadius']: '6px',
+      }} />
+    </>
   )
 }
 
@@ -21,6 +37,7 @@ export default function TextMessage({ msg, dark, vars }) {
   const bubbleBg = isIn
     ? (dark ? '#1F2C34' : '#FFFFFF')
     : (dark ? '#005C4B' : '#D9FDD3')
+  const chatBg = dark ? '#0B141A' : '#D9E5BE'
   const textColor = dark ? '#E9EDEF' : '#111B21'
   const timeColor = dark ? '#8696A0' : '#667781'
 
@@ -52,13 +69,11 @@ export default function TextMessage({ msg, dark, vars }) {
           className="relative shadow-sm"
           style={{
             background: bubbleBg,
-            borderRadius: msg.quoted
-              ? isIn ? '8px 8px 8px 0' : '8px 8px 0 8px'
-              : isIn ? '8px 8px 8px 0' : '8px 8px 0 8px',
+            borderRadius: '8px',
             padding: '6px 10px 7px 10px',
           }}
         >
-          <Tail side={isIn ? 'left' : 'right'} color={bubbleBg} />
+          <Tail side={isIn ? 'left' : 'right'} bubbleColor={bubbleBg} bgColor={chatBg} />
 
             {/* Text */}
           <div style={{ color: textColor, fontSize: '14px', lineHeight: '1.4', wordBreak: 'break-word', paddingBottom: '2px' }}>
