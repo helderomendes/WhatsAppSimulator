@@ -3,6 +3,7 @@ import PhoneMockup from './components/PhoneMockup'
 import ConfigPanel from './components/ConfigPanel'
 import { TEMPLATES, TYPES, DEFAULT_BRAND } from './data/templates'
 import { SEGMENTS, SEGMENT_MAP } from './data/segments'
+import { DEFAULT_WALLPAPER_ID, getWallpaper } from './data/wallpapers'
 
 const DEFAULT_SEGMENT = 'beauty'
 const DEFAULT_TYPE = 'carousel'
@@ -36,6 +37,8 @@ export default function App() {
   const [selectedSegment, setSelectedSegment] = useState(DEFAULT_SEGMENT)
   const [selectedType, setSelectedType] = useState(DEFAULT_TYPE)
   const [dark, setDark] = useState(false)
+  const [wallpaperId, setWallpaperId] = useState(DEFAULT_WALLPAPER_ID)
+  const wallpaper = getWallpaper(wallpaperId)
 
   // Messages — start from the default template
   const initialSeg = SEGMENT_MAP[DEFAULT_SEGMENT]
@@ -131,6 +134,8 @@ export default function App() {
           onVarsChange={setVars}
           dark={dark}
           onDarkChange={setDark}
+          wallpaperId={wallpaperId}
+          onWallpaperChange={setWallpaperId}
           onExport={handleExport}
           customTemplates={customTemplates}
           onSaveCustomTemplate={handleSaveCustomTemplate}
@@ -172,6 +177,7 @@ export default function App() {
             messages={messages}
             dark={dark}
             vars={{ ...vars, brand: brand.name }}
+            wallpaper={wallpaper}
           />
         </div>
 

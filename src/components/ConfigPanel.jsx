@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { WALLPAPERS } from '../data/wallpapers'
 import {
   SquaresFour, PencilSimple, BookmarkSimple,
   Gear, Moon, Sun, SealCheck, Storefront, UploadSimple,
@@ -117,6 +118,7 @@ export default function ConfigPanel({
   brand, onBrandChange,
   vars, onVarsChange,
   dark, onDarkChange,
+  wallpaperId, onWallpaperChange,
   onExport,
   customTemplates, onSaveCustomTemplate, onLoadCustomTemplate, onDeleteCustomTemplate,
 }) {
@@ -243,6 +245,47 @@ export default function ConfigPanel({
             checked={dark}
             onChange={onDarkChange}
           />
+
+          <Divider />
+          <SectionLabel title="Fundo do Chat" />
+
+          {/* Patterns */}
+          <div style={{ fontSize: '9.5px', color: '#374151', fontWeight: '600', letterSpacing: '0.08em', marginBottom: '6px' }}>PADRÕES</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '5px', marginBottom: '10px' }}>
+            {WALLPAPERS.filter(w => w.group === 'pattern').map(w => (
+              <button
+                key={w.id}
+                title={w.label}
+                onClick={() => onWallpaperChange(w.id)}
+                style={{
+                  width: '100%', aspectRatio: '1', borderRadius: '7px',
+                  background: w.preview, cursor: 'pointer',
+                  border: wallpaperId === w.id ? `2px solid ${B}` : '2px solid transparent',
+                  boxShadow: wallpaperId === w.id ? `0 0 0 1px ${B}` : 'inset 0 0 0 1px rgba(255,255,255,0.06)',
+                  padding: 0, overflow: 'hidden', transition: 'border-color 0.15s',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Gradients */}
+          <div style={{ fontSize: '9.5px', color: '#374151', fontWeight: '600', letterSpacing: '0.08em', marginBottom: '6px' }}>GRADIENTES</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '5px' }}>
+            {WALLPAPERS.filter(w => w.group === 'gradient').map(w => (
+              <button
+                key={w.id}
+                title={w.label}
+                onClick={() => onWallpaperChange(w.id)}
+                style={{
+                  width: '100%', aspectRatio: '1', borderRadius: '7px',
+                  background: w.preview, cursor: 'pointer',
+                  border: wallpaperId === w.id ? `2px solid ${B}` : '2px solid transparent',
+                  boxShadow: wallpaperId === w.id ? `0 0 0 1px ${B}` : 'inset 0 0 0 1px rgba(255,255,255,0.06)',
+                  padding: 0, overflow: 'hidden', transition: 'border-color 0.15s',
+                }}
+              />
+            ))}
+          </div>
         </div>
       )}
 

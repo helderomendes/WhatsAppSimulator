@@ -54,7 +54,7 @@ function StatusBar({ dark, time }) {
   )
 }
 
-export default function PhoneMockup({ brand, messages, dark, vars }) {
+export default function PhoneMockup({ brand, messages, dark, vars, wallpaper }) {
   const now = new Date()
   const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
 
@@ -122,7 +122,7 @@ export default function PhoneMockup({ brand, messages, dark, vars }) {
 
         {/* Messages area */}
         <div className="flex-1 min-h-0 overflow-y-auto chat-scroll">
-          <WhatsAppChat messages={messages} dark={dark} vars={vars} />
+          <WhatsAppChat messages={messages} dark={dark} vars={vars} wallpaper={wallpaper} />
         </div>
 
         {/* Input bar */}
