@@ -111,6 +111,12 @@ export default function App() {
         scale: 3,
         useCORS: true,
         logging: false,
+        // Move clone to 0,0 so html2canvas doesn't apply a -9999px x-offset
+        onclone: (_doc, clone) => {
+          clone.style.position = 'relative'
+          clone.style.left = '0px'
+          clone.style.top = '0px'
+        },
       })
       const link = document.createElement('a')
       link.download = `whatsapp-${Date.now()}.png`

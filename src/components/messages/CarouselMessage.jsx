@@ -9,9 +9,9 @@ function Card({ card, dark, flat }) {
 
   return (
     <div
-      className="flex-shrink-0 overflow-hidden"
+      className={flat ? 'overflow-hidden' : 'flex-shrink-0 overflow-hidden'}
       style={{
-        width: flat ? 'calc(50% - 5px)' : '210px',
+        width: flat ? '100%' : '210px',
         borderRadius: '10px',
         background: cardBg,
         boxShadow: dark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.12)',
@@ -69,12 +69,17 @@ function Card({ card, dark, flat }) {
 
 export default function CarouselMessage({ msg, dark, flat }) {
   if (flat) {
-    // Export mode: 2-column grid, all cards visible
+    // Export mode: CSS grid, 2 columns, all cards visible
     return (
       <div className="mb-2 px-2 msg-anim">
         <div
-          className="flex flex-wrap gap-2.5 pb-1"
-          style={{ width: '100%' }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '10px',
+            width: '100%',
+            paddingBottom: '4px',
+          }}
         >
           {msg.cards.map((card, i) => (
             <Card key={i} card={card} dark={dark} flat />
