@@ -53,8 +53,8 @@ export default function TextMessage({ msg, dark, vars }) {
           style={{
             background: bubbleBg,
             borderRadius: msg.quoted
-              ? isIn ? '0 8px 8px 8px' : '8px 0 8px 8px'
-              : isIn ? '0 8px 8px 8px' : '8px 0 8px 8px',
+              ? isIn ? '8px 8px 8px 0' : '8px 8px 0 8px'
+              : isIn ? '8px 8px 8px 0' : '8px 8px 0 8px',
             padding: '6px 10px 7px 10px',
           }}
         >
