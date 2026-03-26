@@ -44,23 +44,23 @@ function ExportStatusBar({ dark }) {
 
 function VerifiedBadge() {
   const d = [
-    "M 15.1,4.8",
-    "Q 20,0      24.9,4.8",
-    "Q 31.8,3.8  32.9,10.6",
-    "Q 39.0,13.8 36,20",
-    "Q 39.0,26.2 32.9,29.4",
-    "Q 31.8,36.2 24.9,35.2",
-    "Q 20,40     15.1,35.2",
-    "Q 8.2,36.2  7.1,29.4",
-    "Q 1.0,26.2  4,20",
-    "Q 1.0,13.8  7.1,10.6",
-    "Q 8.2,3.8   15.1,4.8",
+    "M 11.7,8.7",
+    "Q 12.9,-1.9  20,6",
+    "Q 27.1,-1.9  28.3,8.7",
+    "Q 38.6,6.5   33.3,15.7",
+    "Q 43,20      33.3,24.3",
+    "Q 38.6,33.5  28.3,31.3",
+    "Q 27.1,41.9  20,34",
+    "Q 12.9,41.9  11.7,31.3",
+    "Q 1.4,33.5   6.7,24.3",
+    "Q -3,20      6.7,15.7",
+    "Q 1.4,6.5    11.7,8.7",
     "Z",
   ].join(" ")
   return (
     <svg width="15" height="15" viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
       <path d={d} fill="#1877F2" />
-      <polyline points="13,21.5 17.5,25.5 28,14.5" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <polyline points="12,22 17.5,27 29,13" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
     </svg>
   )
 }
