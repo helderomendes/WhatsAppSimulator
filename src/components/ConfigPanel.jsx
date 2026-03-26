@@ -3,7 +3,7 @@ import { WALLPAPERS } from '../data/wallpapers'
 import {
   SquaresFour, PencilSimple, BookmarkSimple,
   Gear, Moon, Sun, SealCheck, Storefront, UploadSimple,
-  ArrowLineDown, User, Tag, Percent, Package, Star,
+  User, Tag, Percent, Package, Star,
   ArrowCounterClockwise, Check, Phone, Rocket,
   Sparkle, TShirt, Flower, Lightning, CoatHanger, Diamond, Barbell, ShoppingBag,
   ArrowsClockwise, SealPercent, GridFour,
@@ -119,7 +119,6 @@ export default function ConfigPanel({
   vars, onVarsChange,
   dark, onDarkChange,
   wallpaperId, onWallpaperChange,
-  onExport,
   customTemplates, onSaveCustomTemplate, onLoadCustomTemplate, onDeleteCustomTemplate,
 }) {
   const fileRef = useRef()
@@ -412,23 +411,6 @@ export default function ConfigPanel({
         )}
       </div>
 
-      {/* ── Export ──────────────────────────────────────────────────────────── */}
-      <div style={{ padding: '10px 14px', borderTop: '1px solid #151A26' }}>
-        <button
-          onClick={onExport}
-          style={{
-            width: '100%', height: '38px', borderRadius: '9px',
-            background: `linear-gradient(135deg, ${B} 0%, #0D5FCC 100%)`,
-            color: 'white', fontWeight: '700', fontSize: '12.5px',
-            border: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-            boxShadow: `0 2px 10px ${B}40`,
-          }}
-        >
-          <ArrowLineDown size={15} weight="bold" />
-          Exportar PNG
-        </button>
-      </div>
     </div>
   )
 }

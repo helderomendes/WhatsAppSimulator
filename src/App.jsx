@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
 import PhoneMockup from './components/PhoneMockup'
-import ChatExportFrame from './components/ChatExportFrame'
 import ConfigPanel from './components/ConfigPanel'
 import { TEMPLATES, TYPES, DEFAULT_BRAND } from './data/templates'
 import { SEGMENTS, SEGMENT_MAP } from './data/segments'
@@ -49,7 +48,6 @@ export default function App() {
   const [vars, setVars] = useState(getVarsFromSegment(initialSeg))
 
   const phoneRef = useRef(null)
-  const exportRef = useRef(null)
 
   // Custom templates — persisted to localStorage
   const [customTemplates, setCustomTemplates] = useState(() => {
@@ -101,43 +99,8 @@ export default function App() {
     setVars(v => ({ ...v, brand: newBrand.name }))
   }, [])
 
-  const handleExport = useCallback(async () => {
-    const { default: html2canvas } = await import('html2canvas')
-    const el = exportRef.current
-    if (!el) return
-    try {
-      const canvas = await html2canvas(el, {
-        backgroundColor: null,
-        scale: 3,
-        useCORS: true,
-        logging: false,
-        // Move clone to 0,0 so html2canvas doesn't apply a -9999px x-offset
-        onclone: (_doc, clone) => {
-          clone.style.position = 'relative'
-          clone.style.left = '0px'
-          clone.style.top = '0px'
-        },
-      })
-      const link = document.createElement('a')
-      link.download = `whatsapp-${Date.now()}.png`
-      link.href = canvas.toDataURL('image/png')
-      link.click()
-    } catch (e) {
-      console.error('Export failed:', e)
-    }
-  }, [])
-
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#151A26', position: 'relative' }}>
-      {/* Hidden export frame — absolutely off-screen, outside overflow:hidden containers */}
-      <ChatExportFrame
-        ref={exportRef}
-        brand={brand}
-        messages={messages}
-        dark={dark}
-        vars={{ ...vars, brand: brand.name }}
-        wallpaper={wallpaper}
-      />
 
       {/* Left panel */}
       <div style={{ width: '400px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C2130', overflow: 'hidden' }}>
@@ -156,7 +119,6 @@ export default function App() {
           onDarkChange={setDark}
           wallpaperId={wallpaperId}
           onWallpaperChange={setWallpaperId}
-          onExport={handleExport}
           customTemplates={customTemplates}
           onSaveCustomTemplate={handleSaveCustomTemplate}
           onLoadCustomTemplate={handleLoadCustomTemplate}
