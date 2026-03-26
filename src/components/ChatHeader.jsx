@@ -25,9 +25,9 @@ function VerifiedBadge() {
     <svg width="15" height="15" viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
       <path d={d} fill="#1877F2" />
       <polyline
-        points="12,21 17.5,26.5 29,13.5"
+        points="13,21.5 17.5,25.5 28,14.5"
         stroke="white"
-        strokeWidth="4"
+        strokeWidth="3.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
