@@ -22,18 +22,18 @@ function applyVarsToMsg(msg, vars) {
   return process(msg)
 }
 
-export default function WhatsAppChat({ messages, dark, vars, wallpaper }) {
+export default function WhatsAppChat({ messages, dark, vars, wallpaper, flat }) {
   const endRef = useRef(null)
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    if (!flat) endRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, flat])
 
   const processed = messages.map(m => applyVarsToMsg(m, vars))
 
   return (
     <div
-      className="flex-1 overflow-y-auto chat-scroll py-2"
+      className={flat ? 'py-2' : 'flex-1 overflow-y-auto chat-scroll py-2'}
       style={wallpaper?.style ?? (dark ? { backgroundColor: '#0B141A' } : { backgroundColor: '#D9E5BE' })}
     >
       {processed.map((msg) => {

@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import PhoneMockup from './components/PhoneMockup'
+import ChatExportFrame from './components/ChatExportFrame'
 import ConfigPanel from './components/ConfigPanel'
 import { TEMPLATES, TYPES, DEFAULT_BRAND } from './data/templates'
 import { SEGMENTS, SEGMENT_MAP } from './data/segments'
@@ -48,6 +49,7 @@ export default function App() {
   const [vars, setVars] = useState(getVarsFromSegment(initialSeg))
 
   const phoneRef = useRef(null)
+  const exportRef = useRef(null)
 
   // Custom templates — persisted to localStorage
   const [customTemplates, setCustomTemplates] = useState(() => {
@@ -101,15 +103,20 @@ export default function App() {
 
   const handleExport = useCallback(async () => {
     const { default: html2canvas } = await import('html2canvas')
-    const el = phoneRef.current
+    const el = exportRef.current
     if (!el) return
     try {
       const canvas = await html2canvas(el, {
-        backgroundColor: null, scale: 2.5, useCORS: true, logging: false,
-        ignoreElements: el => el.classList?.contains('no-export'),
+        backgroundColor: null,
+        scale: 3,
+        useCORS: true,
+        logging: false,
+        // Capture full natural height (no scroll clipping)
+        height: el.scrollHeight,
+        windowHeight: el.scrollHeight,
       })
       const link = document.createElement('a')
-      link.download = `whatsapp-sim-${Date.now()}.png`
+      link.download = `whatsapp-${Date.now()}.png`
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (e) {
@@ -118,7 +125,16 @@ export default function App() {
   }, [])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#151A26' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#151A26', position: 'relative' }}>
+      {/* Hidden export frame — absolutely off-screen, outside overflow:hidden containers */}
+      <ChatExportFrame
+        ref={exportRef}
+        brand={brand}
+        messages={messages}
+        dark={dark}
+        vars={{ ...vars, brand: brand.name }}
+        wallpaper={wallpaper}
+      />
 
       {/* Left panel */}
       <div style={{ width: '400px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C2130', overflow: 'hidden' }}>
