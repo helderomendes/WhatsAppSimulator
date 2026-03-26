@@ -47,7 +47,7 @@ export default function WhatsAppChat({ messages, dark, vars, wallpaper, flat }) 
           case 'image':
             return <ImageMessage key={msg.id} msg={msg} dark={dark} />
           case 'carousel':
-            return <CarouselMessage key={msg.id} msg={msg} dark={dark} />
+            return <CarouselMessage key={msg.id} msg={msg} dark={dark} flat={flat} />
           case 'buttons':
             return <ButtonsMessage key={msg.id} msg={msg} dark={dark} />
           case 'cta':

@@ -145,6 +145,7 @@ const ChatExportFrame = forwardRef(function ChatExportFrame({ brand, messages, d
   return (
     <div
       ref={ref}
+      className="no-anim"
       style={{
         position: 'absolute',
         left: '-9999px',

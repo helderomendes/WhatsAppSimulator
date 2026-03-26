@@ -62,12 +62,12 @@ function Card({ card, dark }) {
   )
 }
 
-export default function CarouselMessage({ msg, dark }) {
+export default function CarouselMessage({ msg, dark, flat }) {
   return (
     <div className="flex mb-1 px-2 justify-start msg-anim">
-      <div style={{ maxWidth: '92%' }}>
+      <div style={{ maxWidth: flat ? '100%' : '92%', width: flat ? '100%' : undefined }}>
         <div
-          className="flex gap-2.5 overflow-x-auto pb-1 carousel-scroll"
+          className={flat ? 'flex flex-wrap gap-2.5 pb-1' : 'flex gap-2.5 overflow-x-auto pb-1 carousel-scroll'}
           style={{ paddingRight: '4px' }}
         >
           {msg.cards.map((card, i) => (
