@@ -37,23 +37,25 @@ function VerifiedBadge() {
   )
 }
 
-export default function ChatHeader({ brand, dark }) {
+export default function ChatHeader({ brand, dark, glass }) {
   const avatarBg = brand.avatarColor || stringToColor(brand.name)
   const initials = getInitials(brand.name)
 
-  const headerBg = dark ? '#1F2C34' : '#FFFFFF'
   const nameColor = dark ? '#E9EDEF' : '#111B21'
   const subtitleColor = dark ? '#8696A0' : '#667781'
   const iconColor = dark ? '#8696A0' : '#54656F'
   const backColor = dark ? '#00A884' : '#007AFF'
+  // When wrapped in a glass layer, online dot border must be transparent
+  const dotBorder = glass
+    ? (dark ? '2px solid rgba(11,20,26,0.72)' : '2px solid rgba(255,255,255,0.70)')
+    : (dark ? '2px solid #1F2C34' : '2px solid #FFFFFF')
 
   return (
     <div
       className="flex items-center gap-2 px-2 py-2"
       style={{
-        background: headerBg,
+        background: glass ? 'transparent' : (dark ? '#1F2C34' : '#FFFFFF'),
         minHeight: '56px',
-        borderBottom: dark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.08)',
       }}
     >
       {/* iOS back chevron */}
@@ -78,7 +80,7 @@ export default function ChatHeader({ brand, dark }) {
         {/* Online dot */}
         <div
           className="absolute rounded-full"
-          style={{ width: '10px', height: '10px', background: '#25D366', border: `2px solid ${headerBg}`, bottom: 0, right: 0 }}
+          style={{ width: '10px', height: '10px', background: '#25D366', border: dotBorder, bottom: 0, right: 0 }}
         />
       </div>
 
