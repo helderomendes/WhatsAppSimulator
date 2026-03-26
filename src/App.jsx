@@ -68,6 +68,7 @@ export default function App() {
     setMessages(tpl.messages || [])
     if (tpl.brand) setBrand(tpl.brand)
     if (tpl.vars) setVars(tpl.vars)
+    if (tpl.wallpaperId) setWallpaperId(tpl.wallpaperId)
   }, [])
 
   const handleDeleteCustomTemplate = useCallback((id) => {

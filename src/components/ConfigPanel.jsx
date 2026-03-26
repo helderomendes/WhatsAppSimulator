@@ -404,6 +404,7 @@ export default function ConfigPanel({
             currentMessages={messages}
             currentBrand={brand}
             currentVars={vars}
+            currentWallpaperId={wallpaperId}
             onSave={onSaveCustomTemplate}
             onLoad={onLoadCustomTemplate}
             onDelete={onDeleteCustomTemplate}

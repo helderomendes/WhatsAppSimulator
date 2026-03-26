@@ -1,14 +1,31 @@
 import { useState } from 'react'
-import { FloppyDisk, Trash, ArrowLineDown } from '@phosphor-icons/react'
+import { FloppyDisk, Trash, ArrowLineDown, Image } from '@phosphor-icons/react'
+import { WALLPAPERS, getWallpaper } from '../data/wallpapers'
 
-const BLUE = '#1877F2'
-const BLUE_DIM = '#1877F220'
-const BLUE_BORDER = '#1877F250'
+const BLUE       = '#1877F2'
+const BLUE_DIM   = '#1877F220'
+const BLUE_BOR   = '#1877F250'
 
 const inputStyle = {
   width: '100%', background: '#0D0D0F', color: '#F2F2F7', fontSize: '13px',
   borderRadius: '8px', padding: '8px 11px', border: '1px solid #111113',
   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
+}
+
+function WallpaperSwatch({ wallpaperId, size = 18 }) {
+  const w = getWallpaper(wallpaperId)
+  if (!w) return null
+  return (
+    <div
+      title={w.label}
+      style={{
+        width: size, height: size, borderRadius: '4px',
+        background: w.preview,
+        border: '1px solid rgba(255,255,255,0.1)',
+        flexShrink: 0,
+      }}
+    />
+  )
 }
 
 function formatDate(ts) {
@@ -26,8 +43,12 @@ function msgTypeSummary(messages) {
   return Object.entries(counts).map(([t, n]) => `${n} ${t}`).join(', ') || 'vazio'
 }
 
-export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete, currentMessages, currentBrand, currentVars }) {
-  const [name, setName] = useState('')
+export default function CustomTemplatesTab({
+  templates, onSave, onLoad, onDelete,
+  currentMessages, currentBrand, currentVars, currentWallpaperId,
+}) {
+  const [name, setName]               = useState('')
+  const [inclWallpaper, setInclWallpaper] = useState(true)
   const [confirmDelete, setConfirmDelete] = useState(null)
   const canSave = name.trim().length > 0
 
@@ -36,25 +57,39 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
     onSave({
       id: `custom_${Date.now()}`,
       name: name.trim(),
-      messages: currentMessages,
-      brand: currentBrand,
-      vars: currentVars,
-      createdAt: Date.now(),
+      messages:    currentMessages,
+      brand:       currentBrand,
+      vars:        currentVars,
+      wallpaperId: inclWallpaper ? currentWallpaperId : undefined,
+      createdAt:   Date.now(),
     })
     setName('')
   }
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+  const currentWallpaper = getWallpaper(currentWallpaperId)
 
-      {/* Save card */}
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0 }}>
+
+      {/* ── Save card ─────────────────────────────────────────────────────── */}
       <div style={{ background: '#0D0D0F', borderRadius: '10px', padding: '12px', border: '1px solid #111113' }}>
         <div style={{ color: '#4B5563', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
           Salvar conversa atual
         </div>
-        <div style={{ color: '#6B7280', fontSize: '11px', marginBottom: '8px' }}>
-          {currentMessages.length} msg{currentMessages.length !== 1 ? 's' : ''} · {currentBrand?.name || 'Sem marca'}
+
+        {/* Summary row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <span style={{ color: '#6B7280', fontSize: '11px', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {currentMessages.length} msg{currentMessages.length !== 1 ? 's' : ''} · {currentBrand?.name || 'Sem marca'}
+          </span>
+          {currentWallpaper && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <WallpaperSwatch wallpaperId={currentWallpaperId} size={16} />
+              <span style={{ color: '#4B5563', fontSize: '10px' }}>{currentWallpaper.label}</span>
+            </div>
+          )}
         </div>
+
         <input
           value={name}
           onChange={e => setName(e.target.value)}
@@ -64,11 +99,27 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
           onFocus={e => e.target.style.borderColor = BLUE}
           onBlur={e => e.target.style.borderColor = '#2C2C2E'}
         />
+
+        {/* Wallpaper toggle */}
+        <label style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '8px', cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={inclWallpaper}
+            onChange={e => setInclWallpaper(e.target.checked)}
+            style={{ accentColor: BLUE, width: '13px', height: '13px', cursor: 'pointer' }}
+          />
+          <span style={{ color: '#6B7280', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Image size={12} color="#4B5563" />
+            Incluir fundo
+          </span>
+          {inclWallpaper && <WallpaperSwatch wallpaperId={currentWallpaperId} size={14} />}
+        </label>
+
         <button
           onClick={handleSave}
           disabled={!canSave}
           style={{
-            marginTop: '8px', width: '100%', height: '35px', borderRadius: '8px',
+            marginTop: '10px', width: '100%', height: '35px', borderRadius: '8px',
             background: canSave ? BLUE : '#1C1C1E',
             color: canSave ? 'white' : '#4B5563',
             border: 'none', cursor: canSave ? 'pointer' : 'not-allowed',
@@ -82,7 +133,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
         </button>
       </div>
 
-      {/* Saved list */}
+      {/* ── Saved list ────────────────────────────────────────────────────── */}
       {templates.length === 0 ? (
         <div style={{ color: '#374151', fontSize: '12px', textAlign: 'center', padding: '24px 0' }}>
           Nenhum template salvo ainda.
@@ -92,18 +143,25 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
           <div style={{ color: '#4B5563', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '2px' }}>
             Salvos ({templates.length})
           </div>
+
           {templates.map(tpl => (
-            <div key={tpl.id} style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px 12px', border: '1px solid #111113' }}>
+            <div key={tpl.id} style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px 12px', border: '1px solid #111113', minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: '#F2F2F7', fontSize: '13px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {tpl.name}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                    <span style={{ color: '#F2F2F7', fontSize: '13px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, minWidth: 0 }}>
+                      {tpl.name}
+                    </span>
+                    {tpl.wallpaperId && <WallpaperSwatch wallpaperId={tpl.wallpaperId} size={14} />}
                   </div>
-                  <div style={{ color: '#6B7280', fontSize: '10.5px', marginTop: '2px' }}>
+                  <div style={{ color: '#6B7280', fontSize: '10.5px', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {tpl.brand?.name || '—'} · {msgTypeSummary(tpl.messages || [])}
                   </div>
-                  <div style={{ color: '#374151', fontSize: '10px', marginTop: '1px' }}>
-                    {formatDate(tpl.createdAt)}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <span style={{ color: '#374151', fontSize: '10px' }}>{formatDate(tpl.createdAt)}</span>
+                    {tpl.vars && (
+                      <span style={{ color: '#374151', fontSize: '10px' }}>· vars salvas</span>
+                    )}
                   </div>
                 </div>
 
@@ -129,7 +187,7 @@ export default function CustomTemplatesTab({ templates, onSave, onLoad, onDelete
                         onClick={() => onLoad(tpl)}
                         style={{
                           background: BLUE_DIM, color: '#93C5FD',
-                          border: `1px solid ${BLUE_BORDER}`,
+                          border: `1px solid ${BLUE_BOR}`,
                           borderRadius: '6px', padding: '4px 10px', cursor: 'pointer',
                           fontSize: '11px', fontWeight: '600',
                           display: 'flex', alignItems: 'center', gap: '4px',
