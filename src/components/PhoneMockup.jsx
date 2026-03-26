@@ -1,3 +1,4 @@
+import { CellSignalFull, WifiHigh, BatteryHigh } from '@phosphor-icons/react'
 import ChatHeader from './ChatHeader'
 import WhatsAppChat from './WhatsAppChat'
 import ChatInput from './ChatInput'
@@ -19,25 +20,9 @@ function StatusBar({ dark, time }) {
         {time}
       </span>
       <div className="flex items-center gap-1.5">
-        <svg width="17" height="12" viewBox="0 0 17 12" fill={color}>
-          <rect x="0" y="8" width="3" height="4" rx="0.5"/>
-          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5"/>
-          <rect x="9" y="3" width="3" height="9" rx="0.5"/>
-          <rect x="13.5" y="0" width="3" height="12" rx="0.5" opacity="0.3"/>
-        </svg>
-        <svg width="16" height="12" viewBox="0 0 16 12" fill={color}>
-          <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
-          <path d="M4.1 6.9C5.1 5.9 6.5 5.25 8 5.25s2.9.65 3.9 1.65l1.1-1.1A7.1 7.1 0 008 3.5a7.1 7.1 0 00-5 2.3l1.1 1.1z" opacity="0.75"/>
-          <path d="M1.3 4.1A10.5 10.5 0 018 1.5c2.55 0 4.9.9 6.7 2.6l1.05-1.05A12.1 12.1 0 008 0 12.1 12.1 0 00.25 3.05L1.3 4.1z" opacity="0.4"/>
-        </svg>
-        <div className="flex items-center gap-0.5">
-          <span style={{ color, fontSize: '12px', fontWeight: '600' }}>96</span>
-          <div className="relative flex items-center" style={{ width: '25px', height: '12px' }}>
-            <div className="absolute rounded-sm" style={{ left: 0, top: 0, width: '22px', height: '12px', border: `1.5px solid ${color}`, borderRadius: '3px' }}/>
-            <div className="absolute rounded-sm" style={{ left: '2px', top: '2px', width: '16px', height: '8px', background: color, opacity: 0.9, borderRadius: '1.5px' }}/>
-            <div className="absolute" style={{ right: '-4px', top: '3.5px', width: '2.5px', height: '5px', background: color, opacity: 0.6, borderRadius: '0 1px 1px 0' }}/>
-          </div>
-        </div>
+        <CellSignalFull size={16} color={color} weight="fill" />
+        <WifiHigh size={16} color={color} weight="fill" />
+        <BatteryHigh size={20} color={color} weight="fill" />
       </div>
     </div>
   )
