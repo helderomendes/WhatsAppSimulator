@@ -26,8 +26,8 @@ const TYPE_LABELS = {
 const ADDABLE_TYPES = ['text', 'image', 'carousel', 'buttons', 'cta', 'separator', 'unread']
 
 const inputStyle = {
-  width: '100%', background: '#0D0D0F', color: '#E5E7EB', fontSize: '12px',
-  borderRadius: '7px', padding: '7px 10px', border: '1px solid #1C1C1E',
+  width: '100%', background: '#0F131C', color: '#E5E7EB', fontSize: '12px',
+  borderRadius: '7px', padding: '7px 10px', border: '1px solid #1C2130',
   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
   transition: 'border-color 0.15s',
 }
@@ -83,7 +83,7 @@ function ImageUploadBox({ src, onUpload, onRemove, height = 80 }) {
           onClick={() => ref.current?.click()}
           style={{
             width: '100%', height, border: '1px dashed #3C3C3E', borderRadius: '7px',
-            background: '#1C1C1E', cursor: 'pointer', color: '#6B7280', fontSize: '12px',
+            background: '#1C2130', cursor: 'pointer', color: '#6B7280', fontSize: '12px',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
           }}
         >
@@ -199,7 +199,7 @@ function CarouselEditor({ msg, onChange }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {cards.map((card, i) => (
-        <div key={i} style={{ background: '#0D0D0F', borderRadius: '8px', padding: '8px', border: '1px solid #1C1C1E' }}>
+        <div key={i} style={{ background: '#0F131C', borderRadius: '8px', padding: '8px', border: '1px solid #1C2130' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
             <span style={{ color: '#9CA3AF', fontSize: '10.5px', fontWeight: '600' }}>Card {i + 1}</span>
             <SmallBtn onClick={() => removeCard(i)} color="#EF4444"><X size={12} weight="bold" /></SmallBtn>
@@ -245,7 +245,7 @@ function CarouselEditor({ msg, onChange }) {
       ))}
       <button
         onClick={addCard}
-        style={{ background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#0F131C', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '7px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar card
       </button>
@@ -274,7 +274,7 @@ function ButtonsEditor({ msg, onChange }) {
         </div>
       ))}
       <button onClick={addBtn}
-        style={{ background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
+        style={{ background: '#0F131C', color: '#1877F2', border: '1px dashed #1877F240', borderRadius: '7px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}
       >
         + Adicionar botão
       </button>
@@ -430,9 +430,9 @@ export default function MessageEditor({ messages, onChange }) {
         const expanded = expandedId === msg.id
         return (
           <div key={msg.id} style={{
-            background: expanded ? '#111113' : '#0D0D0F',
+            background: expanded ? '#151A26' : '#0F131C',
             borderRadius: '9px',
-            border: `1px solid ${expanded ? '#1877F250' : '#111113'}`,
+            border: `1px solid ${expanded ? '#1877F250' : '#151A26'}`,
             overflow: 'hidden',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 8px 8px 10px', cursor: 'pointer' }}
@@ -452,7 +452,7 @@ export default function MessageEditor({ messages, onChange }) {
               </span>
             </div>
             {expanded && (
-              <div style={{ borderTop: '1px solid #111113', padding: '10px' }}>
+              <div style={{ borderTop: '1px solid #151A26', padding: '10px' }}>
                 {renderEditor(msg)}
               </div>
             )}
@@ -461,7 +461,7 @@ export default function MessageEditor({ messages, onChange }) {
       })}
 
       {showTypePicker ? (
-        <div style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px', border: '1px solid #1C1C1E' }}>
+        <div style={{ background: '#0F131C', borderRadius: '10px', padding: '10px', border: '1px solid #1C2130' }}>
           <div style={{ color: '#9CA3AF', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '8px' }}>
             Tipo de mensagem
           </div>
@@ -469,7 +469,7 @@ export default function MessageEditor({ messages, onChange }) {
             {ADDABLE_TYPES.map(t => (
               <button key={t} onClick={() => addMsg(t)} style={{
                 display: 'flex', alignItems: 'center', gap: '7px',
-                background: '#111113', color: '#9CA3AF', border: '1px solid #1C1C1E',
+                background: '#151A26', color: '#9CA3AF', border: '1px solid #1C2130',
                 borderRadius: '7px', padding: '7px 9px', cursor: 'pointer', fontSize: '12px',
               }}>
                 <span style={{ display: 'flex' }}>{TYPE_ICON_EL[t] || <Minus size={14} />}</span>
@@ -484,7 +484,7 @@ export default function MessageEditor({ messages, onChange }) {
         </div>
       ) : (
         <button onClick={() => setShowTypePicker(true)} style={{
-          background: '#0D0D0F', color: '#1877F2', border: '1px dashed #1877F250',
+          background: '#0F131C', color: '#1877F2', border: '1px dashed #1877F250',
           borderRadius: '9px', padding: '9px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', marginTop: '2px',
         }}>
           + Adicionar mensagem

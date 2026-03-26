@@ -83,12 +83,12 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon }) {
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          width: '100%', background: '#0D0D0F', color: '#E5E7EB', fontSize: '12.5px',
-          borderRadius: '8px', padding: '7px 11px', border: '1px solid #1C1C1E',
+          width: '100%', background: '#0F131C', color: '#E5E7EB', fontSize: '12.5px',
+          borderRadius: '8px', padding: '7px 11px', border: '1px solid #1C2130',
           outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s',
         }}
         onFocus={e => e.target.style.borderColor = B}
-        onBlur={e => e.target.style.borderColor = '#1C1C1E'}
+        onBlur={e => e.target.style.borderColor = '#1C2130'}
       />
     </div>
   )
@@ -107,7 +107,7 @@ function SectionLabel({ title }) {
 }
 
 function Divider() {
-  return <div style={{ height: '1px', background: '#111113', margin: '10px 0' }} />
+  return <div style={{ height: '1px', background: '#151A26', margin: '10px 0' }} />
 }
 
 // ─── Main export ─────────────────────────────────────────────────────────────
@@ -159,10 +159,10 @@ export default function ConfigPanel({
   }
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: '#0A0A0C', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: '#0C1019', overflow: 'hidden' }}>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div style={{ padding: '14px 16px', borderBottom: '1px solid #111113', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid #151A26', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <div style={{
           width: '32px', height: '32px', borderRadius: '10px',
           background: `linear-gradient(135deg, ${B} 0%, #0D5FCC 100%)`,
@@ -189,7 +189,7 @@ export default function ConfigPanel({
 
       {/* ── Settings drawer ─────────────────────────────────────────────────── */}
       {showSettings && (
-        <div style={{ padding: '14px 16px', background: '#080809', borderBottom: '1px solid #111113', overflowY: 'auto', overflowX: 'hidden' }}>
+        <div style={{ padding: '14px 16px', background: '#090D14', borderBottom: '1px solid #151A26', overflowY: 'auto', overflowX: 'hidden' }}>
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
@@ -197,8 +197,8 @@ export default function ConfigPanel({
               onClick={() => fileRef.current?.click()}
               style={{
                 width: '44px', height: '44px', borderRadius: '50%',
-                background: brand.avatarColor || '#111113',
-                border: `1.5px dashed ${brand.logo ? 'transparent' : '#1C1C1E'}`,
+                background: brand.avatarColor || '#151A26',
+                border: `1.5px dashed ${brand.logo ? 'transparent' : '#1C2130'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', overflow: 'hidden', flexShrink: 0,
               }}
@@ -290,7 +290,7 @@ export default function ConfigPanel({
       )}
 
       {/* ── Tab bar ─────────────────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', padding: '6px 8px', gap: '2px', background: '#0A0A0C', borderBottom: '1px solid #111113' }}>
+      <div style={{ display: 'flex', padding: '6px 8px', gap: '2px', background: '#0C1019', borderBottom: '1px solid #151A26' }}>
         <TabBtn id="templates" label="Templates" icon={<SquaresFour  size={13} weight={tab==='templates'?'fill':'regular'} />} />
         <TabBtn id="editor"    label="Editor"    icon={<PencilSimple size={13} weight={tab==='editor'   ?'fill':'regular'} />} />
         <TabBtn id="saved"     label="Salvos"    icon={<BookmarkSimple size={13} weight={tab==='saved'  ?'fill':'regular'} />} badge={customTemplates?.length||null} />
@@ -318,8 +318,8 @@ export default function ConfigPanel({
                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                         gap: '5px', padding: '10px 6px 8px',
                         borderRadius: '10px', textAlign: 'center',
-                        border: `1px solid ${active ? B50 : '#111113'}`,
-                        background: active ? B10 : '#0D0D0F',
+                        border: `1px solid ${active ? B50 : '#151A26'}`,
+                        background: active ? B10 : '#0F131C',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
@@ -352,8 +352,8 @@ export default function ConfigPanel({
                         minWidth: 0, overflow: 'hidden',
                         display: 'flex', alignItems: 'center', gap: '8px',
                         padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
-                        border: `1px solid ${active ? B50 : '#111113'}`,
-                        background: active ? B10 : '#0D0D0F',
+                        border: `1px solid ${active ? B50 : '#151A26'}`,
+                        background: active ? B10 : '#0F131C',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
@@ -380,12 +380,12 @@ export default function ConfigPanel({
                   </div>
                   <div style={{ color: '#4B5563', fontSize: '10.5px' }}>
                     Marca: <span style={{ color: '#6B7280' }}>{seg?.brand}</span>
-                    <span style={{ margin: '0 4px', color: '#1C1C1E' }}>·</span>
+                    <span style={{ margin: '0 4px', color: '#1C2130' }}>·</span>
                     Cliente: <span style={{ color: '#6B7280' }}>{seg?.customer}</span>
                   </div>
                   <div style={{ color: '#4B5563', fontSize: '10.5px', marginTop: '2px' }}>
                     Cupom: <span style={{ color: '#6B7280' }}>{seg?.coupon}</span>
-                    <span style={{ margin: '0 4px', color: '#1C1C1E' }}>·</span>
+                    <span style={{ margin: '0 4px', color: '#1C2130' }}>·</span>
                     Desconto: <span style={{ color: '#6B7280' }}>{seg?.discount}%</span>
                   </div>
                 </div>
@@ -413,7 +413,7 @@ export default function ConfigPanel({
       </div>
 
       {/* ── Export ──────────────────────────────────────────────────────────── */}
-      <div style={{ padding: '10px 14px', borderTop: '1px solid #111113' }}>
+      <div style={{ padding: '10px 14px', borderTop: '1px solid #151A26' }}>
         <button
           onClick={onExport}
           style={{

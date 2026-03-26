@@ -7,8 +7,8 @@ const BLUE_DIM   = '#1877F220'
 const BLUE_BOR   = '#1877F250'
 
 const inputStyle = {
-  width: '100%', background: '#0D0D0F', color: '#F2F2F7', fontSize: '13px',
-  borderRadius: '8px', padding: '8px 11px', border: '1px solid #111113',
+  width: '100%', background: '#0F131C', color: '#F2F2F7', fontSize: '13px',
+  borderRadius: '8px', padding: '8px 11px', border: '1px solid #151A26',
   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
 }
 
@@ -72,7 +72,7 @@ export default function CustomTemplatesTab({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0 }}>
 
       {/* ── Save card ─────────────────────────────────────────────────────── */}
-      <div style={{ background: '#0D0D0F', borderRadius: '10px', padding: '12px', border: '1px solid #111113' }}>
+      <div style={{ background: '#0F131C', borderRadius: '10px', padding: '12px', border: '1px solid #151A26' }}>
         <div style={{ color: '#4B5563', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
           Salvar conversa atual
         </div>
@@ -120,7 +120,7 @@ export default function CustomTemplatesTab({
           disabled={!canSave}
           style={{
             marginTop: '10px', width: '100%', height: '35px', borderRadius: '8px',
-            background: canSave ? BLUE : '#1C1C1E',
+            background: canSave ? BLUE : '#1C2130',
             color: canSave ? 'white' : '#4B5563',
             border: 'none', cursor: canSave ? 'pointer' : 'not-allowed',
             fontSize: '12px', fontWeight: '700',
@@ -145,7 +145,7 @@ export default function CustomTemplatesTab({
           </div>
 
           {templates.map(tpl => (
-            <div key={tpl.id} style={{ background: '#0D0D0F', borderRadius: '10px', padding: '10px 12px', border: '1px solid #111113', minWidth: 0 }}>
+            <div key={tpl.id} style={{ background: '#0F131C', borderRadius: '10px', padding: '10px 12px', border: '1px solid #151A26', minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
@@ -176,7 +176,7 @@ export default function CustomTemplatesTab({
                       </button>
                       <button
                         onClick={() => setConfirmDelete(null)}
-                        style={{ background: '#111113', color: '#9CA3AF', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px' }}
+                        style={{ background: '#151A26', color: '#9CA3AF', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '11px' }}
                       >
                         Cancelar
                       </button>

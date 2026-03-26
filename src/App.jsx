@@ -118,10 +118,10 @@ export default function App() {
   }, [])
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#111113' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#151A26' }}>
 
       {/* Left panel */}
-      <div style={{ width: '400px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C1C1E', overflow: 'hidden' }}>
+      <div style={{ width: '400px', flexShrink: 0, height: '100%', borderRight: '1px solid #1C2130', overflow: 'hidden' }}>
         <ConfigPanel
           selectedSegment={selectedSegment}
           onSelectSegment={handleSelectSegment}
@@ -167,7 +167,7 @@ export default function App() {
         {/* Radial vignette */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at center, transparent 30%, #111113 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 30%, #151A26 100%)',
           pointerEvents: 'none',
         }}/>
 
