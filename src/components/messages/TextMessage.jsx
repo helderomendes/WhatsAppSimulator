@@ -1,33 +1,27 @@
 import ReadReceipt from './ReadReceipt'
 import { parseWAMarkdown } from '../../utils/text'
 
-// Tail is rendered as a SIBLING *before* the bubble div so the bubble's
-// background naturally covers the inner-concave portion of the path.
+// Tail uses CSS mask-image so the shape comes from an SVG file
+// and the fill color is driven by the div's background — works for any theme color.
 function Tail({ side, color }) {
   const isLeft = side === 'left'
-  // Left tail: outer convex curve swings left, inner concave edge dips to x=10
-  // (into bubble area). Bubble background covers x>8 automatically.
-  // Right tail: mirror image — inner concave dips to x=-2.
-  const d = isLeft
-    ? 'M 8,0 C 6,0 1,4 0,8 C 0,11 4,13 8,13 C 10,12 10,1 8,0 Z'
-    : 'M 0,0 C 2,0 7,4 8,8 C 8,11 4,13 0,13 C -2,12 -2,1 0,0 Z'
-
   return (
-    <svg
+    <div
       style={{
         position: 'absolute',
         bottom: 0,
-        [isLeft ? 'left' : 'right']: '-8px',
-        overflow: 'visible',
+        [isLeft ? 'left' : 'right']: '-9px',
+        width: '9px',
+        height: '14px',
+        background: color,
+        WebkitMaskImage: `url(${isLeft ? '/tail-left.svg' : '/tail-right.svg'})`,
+        maskImage: `url(${isLeft ? '/tail-left.svg' : '/tail-right.svg'})`,
+        WebkitMaskSize: '100% 100%',
+        maskSize: '100% 100%',
+        WebkitMaskRepeat: 'no-repeat',
+        maskRepeat: 'no-repeat',
       }}
-      width="8"
-      height="13"
-      viewBox="0 0 8 13"
-      overflow="visible"
-      fill="none"
-    >
-      <path d={d} fill={color} />
-    </svg>
+    />
   )
 }
 
