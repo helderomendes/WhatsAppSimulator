@@ -10,7 +10,7 @@ function Tail({ side, color }) {
       style={{
         position: 'absolute',
         bottom: 0,
-        [isLeft ? 'left' : 'right']: '-9px',
+        [isLeft ? 'left' : 'right']: '-7px',
         width: '9px',
         height: '14px',
         background: color,
