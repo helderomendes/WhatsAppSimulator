@@ -314,6 +314,7 @@ export default function ConfigPanel({
                       onClick={() => onSelectSegment(seg.id)}
                       title={seg.label}
                       style={{
+                        minWidth: 0, overflow: 'hidden',
                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                         gap: '5px', padding: '10px 6px 8px',
                         borderRadius: '10px', textAlign: 'center',
@@ -322,12 +323,12 @@ export default function ConfigPanel({
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
-                      <span style={{ opacity: active ? 1 : 0.45 }}>{SEG_ICONS[seg.id]}</span>
+                      <span style={{ opacity: active ? 1 : 0.45, flexShrink: 0 }}>{SEG_ICONS[seg.id]}</span>
                       <span style={{
                         color: active ? B_XL : '#6B7280',
                         fontSize: '9.5px', fontWeight: active ? '600' : '400',
                         lineHeight: '1.2', overflow: 'hidden', textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap', width: '100%',
+                        whiteSpace: 'nowrap', maxWidth: '100%',
                       }}>
                         {seg.label}
                       </span>
@@ -348,6 +349,7 @@ export default function ConfigPanel({
                       key={t.id}
                       onClick={() => onSelectType(t.id)}
                       style={{
+                        minWidth: 0, overflow: 'hidden',
                         display: 'flex', alignItems: 'center', gap: '8px',
                         padding: '8px 10px', borderRadius: '9px', textAlign: 'left',
                         border: `1px solid ${active ? B50 : '#111113'}`,
