@@ -111,9 +111,6 @@ export default function App() {
         scale: 3,
         useCORS: true,
         logging: false,
-        // Capture full natural height (no scroll clipping)
-        height: el.scrollHeight,
-        windowHeight: el.scrollHeight,
       })
       const link = document.createElement('a')
       link.download = `whatsapp-${Date.now()}.png`

@@ -1,6 +1,6 @@
 import { parseWAMarkdown } from '../../utils/text'
 
-function Card({ card, dark }) {
+function Card({ card, dark, flat }) {
   const cardBg = dark ? '#1F2C34' : '#FFFFFF'
   const textColor = dark ? '#E9EDEF' : '#111B21'
   const subColor = dark ? '#8696A0' : '#667781'
@@ -10,7 +10,12 @@ function Card({ card, dark }) {
   return (
     <div
       className="flex-shrink-0 overflow-hidden"
-      style={{ width: '210px', borderRadius: '10px', background: cardBg, boxShadow: dark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.12)' }}
+      style={{
+        width: flat ? '100%' : '210px',
+        borderRadius: '10px',
+        background: cardBg,
+        boxShadow: dark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.12)',
+      }}
     >
       {/* Image */}
       <div
@@ -64,14 +69,14 @@ function Card({ card, dark }) {
 
 export default function CarouselMessage({ msg, dark, flat }) {
   return (
-    <div className="flex mb-1 px-2 justify-start msg-anim">
+    <div className={`flex mb-1 px-2 msg-anim ${flat ? '' : 'justify-start'}`} style={flat ? { display: 'block' } : {}}>
       <div style={{ maxWidth: flat ? '100%' : '92%', width: flat ? '100%' : undefined }}>
         <div
-          className={flat ? 'flex flex-wrap gap-2.5 pb-1' : 'flex gap-2.5 overflow-x-auto pb-1 carousel-scroll'}
+          className={flat ? 'flex flex-col gap-2.5 pb-1' : 'flex gap-2.5 overflow-x-auto pb-1 carousel-scroll'}
           style={{ paddingRight: '4px' }}
         >
           {msg.cards.map((card, i) => (
-            <Card key={i} card={card} dark={dark} />
+            <Card key={i} card={card} dark={dark} flat={flat} />
           ))}
         </div>
         <div className="mt-1 px-0.5">
