@@ -2,24 +2,21 @@ import { VideoCamera, Phone, DotsThreeVertical } from '@phosphor-icons/react'
 import { stringToColor, getInitials } from '../utils/text'
 
 function VerifiedBadge() {
-  // 12-spike starburst with rounded tips.
-  // Outer spikes become quadratic-bezier control points → never sharp.
-  // Inner concave notches stay as line endpoints → crisp valleys.
-  // Path: M inner[last] → Q outer[i] inner[i] × 12 → Z
+  // 10-spike starburst with rounded tips via quadratic bezier.
+  // Inner valleys (r=8) are line endpoints; outer spikes (r=20) are control points.
+  // Path: M inner[9] → Q outer[i] inner[i] × 10 → Z
   const d = [
-    "M 16.6,7.4",
-    "Q 20,1     23.4,7.4",
-    "Q 29.5,3.6  29.2,10.8",
-    "Q 36.5,10.5 32.6,16.6",
-    "Q 39,20    32.6,23.4",
-    "Q 36.5,29.5 29.2,29.2",
-    "Q 29.5,36.5 23.4,32.6",
-    "Q 20,39    16.6,32.6",
-    "Q 10.5,36.5 10.8,29.2",
-    "Q 3.5,29.5  7.4,23.4",
-    "Q 1,20     7.4,16.6",
-    "Q 3.5,10.5  10.8,10.8",
-    "Q 10.5,3.6  16.6,7.4",
+    "M 17.5,12.4",
+    "Q 20,0      22.5,12.4",
+    "Q 31.8,3.8  26.5,15.3",
+    "Q 39.0,13.8 28,20",
+    "Q 39.0,26.2 26.5,24.7",
+    "Q 31.8,36.2 22.5,27.6",
+    "Q 20,40     17.5,27.6",
+    "Q 8.2,36.2  13.5,24.7",
+    "Q 1.0,26.2  12,20",
+    "Q 1.0,13.8  13.5,15.3",
+    "Q 8.2,3.8   17.5,12.4",
     "Z",
   ].join(" ")
   return (
