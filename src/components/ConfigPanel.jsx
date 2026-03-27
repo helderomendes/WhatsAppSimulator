@@ -581,6 +581,7 @@ export default function ConfigPanel({
           brand={brand}
           vars={vars}
           onGenerate={onMessagesChange}
+          onBrandChange={onBrandChange}
           onClose={() => setShowAI(false)}
         />
       )}

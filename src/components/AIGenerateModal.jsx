@@ -75,7 +75,7 @@ function Field({ label, value, onChange, placeholder, multiline }) {
   )
 }
 
-export default function AIGenerateModal({ brand, vars, onGenerate, onClose }) {
+export default function AIGenerateModal({ brand, vars, onGenerate, onBrandChange, onClose }) {
   const [intent, setIntent]       = useState('promotion')
   const [tone, setTone]           = useState('friendly')
   const [brandName, setBrandName] = useState(brand.name || '')
@@ -140,6 +140,9 @@ Gere a conversa agora. Lembre-se: APENAS o array JSON.`
       const messages = JSON.parse(clean)
       if (!Array.isArray(messages)) throw new Error('Resposta inválida da IA')
 
+      if (brandName.trim() && brandName.trim() !== brand.name) {
+        onBrandChange({ ...brand, name: brandName.trim() })
+      }
       onGenerate(messages)
       onClose()
     } catch (e) {
