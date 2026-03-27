@@ -12,6 +12,7 @@ import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
 import MessageEditor from './MessageEditor'
 import CustomTemplatesTab from './CustomTemplatesTab'
+import AIGenerateModal from './AIGenerateModal'
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const B   = '#1877F2'        // Meta blue — single accent
@@ -152,6 +153,7 @@ export default function ConfigPanel({
   const [showSettings, setShowSettings] = useState(false)
   const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('gemini_api_key') || '')
   const [showKey, setShowKey] = useState(false)
+  const [showAI, setShowAI] = useState(false)
   const [brandUrl, setBrandUrl] = useState('')
   const [brandLoading, setBrandLoading] = useState(false)
   const [brandError, setBrandError] = useState('')
@@ -433,6 +435,24 @@ export default function ConfigPanel({
         </div>
       )}
 
+      {/* ── AI Generate button ───────────────────────────────────────────────── */}
+      <div style={{ padding: '8px 10px', background: '#090D14', borderBottom: '1px solid #151A26' }}>
+        <button
+          onClick={() => setShowAI(true)}
+          style={{
+            width: '100%', height: '34px', borderRadius: '8px',
+            background: geminiKey ? 'linear-gradient(135deg, #1877F2, #7C3AED)' : '#151A26',
+            border: geminiKey ? 'none' : '1px dashed #1C2130',
+            color: geminiKey ? 'white' : '#4B5563',
+            fontSize: '12px', fontWeight: '600', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+          }}
+        >
+          <Sparkle size={13} weight="fill" />
+          Gerar conversa com IA
+        </button>
+      </div>
+
       {/* ── Tab bar ─────────────────────────────────────────────────────────── */}
       <div style={{ display: 'flex', padding: '6px 8px', gap: '2px', background: '#0C1019', borderBottom: '1px solid #151A26' }}>
         <TabBtn id="templates" label="Templates" icon={<SquaresFour  size={13} weight={tab==='templates'?'fill':'regular'} />} />
@@ -556,6 +576,14 @@ export default function ConfigPanel({
         )}
       </div>
 
+      {showAI && (
+        <AIGenerateModal
+          brand={brand}
+          vars={vars}
+          onGenerate={onMessagesChange}
+          onClose={() => setShowAI(false)}
+        />
+      )}
     </div>
   )
 }
