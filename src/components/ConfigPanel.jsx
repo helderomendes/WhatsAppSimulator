@@ -135,20 +135,43 @@ export default function ConfigPanel({
     try {
       let url = brandUrl.trim()
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url
-      const res = await fetch(`/api/brand?url=${encodeURIComponent(url)}`)
-      const data = await res.json()
-      if (data.error) { setBrandError(data.error); return }
+      const origin = new URL(url).origin
+
+      // Fetch HTML via allorigins CORS proxy
+      const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+      const { contents } = await proxyRes.json()
+      if (!contents) throw new Error('Site não respondeu')
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(contents, 'text/html')
+      const meta = (name) =>
+        doc.querySelector(`meta[property="${name}"]`)?.content ||
+        doc.querySelector(`meta[name="${name}"]`)?.content || ''
 
       const updates = {}
-      if (data.brand_name) updates.name = data.brand_name
-      if (data.logos?.length) {
-        const best = data.logos.sort((a, b) => (b.width || 0) - (a.width || 0))[0]
-        if (best?.url) updates.logo = best.url
+
+      // Brand name
+      const name = meta('og:site_name') || meta('application-name') ||
+        doc.querySelector('title')?.textContent?.split(/[|\-–]/)[0]?.trim()
+      if (name) updates.name = name
+
+      // Logo: apple-touch-icon → og:image → favicon
+      const logoHref =
+        doc.querySelector('link[rel="apple-touch-icon"]')?.href ||
+        doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.href ||
+        meta('og:image') ||
+        doc.querySelector('link[rel~="icon"]')?.href
+      if (logoHref) {
+        try {
+          updates.logo = new URL(logoHref, origin).href
+        } catch { /* ignore */ }
       }
-      if (data.colors?.length) {
-        const primary = data.colors[0]
-        if (primary?.hex) updates.avatarColor = primary.hex
-      }
+
+      // Primary color: theme-color meta
+      const color = meta('theme-color') || meta('msapplication-TileColor')
+      if (color && /^#[0-9a-f]{3,8}$/i.test(color)) updates.avatarColor = color
+
+      if (!Object.keys(updates).length) throw new Error('Nenhum dado encontrado')
       onBrandChange({ ...brand, ...updates })
     } catch (e) {
       setBrandError(e.message || 'Falha ao buscar marca')
