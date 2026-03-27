@@ -6,7 +6,7 @@ import {
   User, Tag, Percent, Package, Star,
   ArrowCounterClockwise, Check, Phone, Rocket,
   Sparkle, TShirt, Flower, Lightning, CoatHanger, Diamond, Barbell, ShoppingBag,
-  ArrowsClockwise, SealPercent, GridFour, Globe, CircleNotch,
+  ArrowsClockwise, SealPercent, GridFour, Globe, CircleNotch, Key, Eye, EyeSlash,
 } from '@phosphor-icons/react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
@@ -150,6 +150,8 @@ export default function ConfigPanel({
   const fileRef = useRef()
   const [tab, setTab] = useState('templates')
   const [showSettings, setShowSettings] = useState(false)
+  const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('gemini_api_key') || '')
+  const [showKey, setShowKey] = useState(false)
   const [brandUrl, setBrandUrl] = useState('')
   const [brandLoading, setBrandLoading] = useState(false)
   const [brandError, setBrandError] = useState('')
@@ -350,6 +352,43 @@ export default function ConfigPanel({
             checked={dark}
             onChange={onDarkChange}
           />
+
+          <Divider />
+          <SectionLabel title="IA — Gemini" />
+          <div style={{ marginBottom: '10px' }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Key size={13} color="#4B5563" style={{ position: 'absolute', left: '8px', pointerEvents: 'none' }} />
+              <input
+                type={showKey ? 'text' : 'password'}
+                value={geminiKey}
+                onChange={e => {
+                  setGeminiKey(e.target.value)
+                  localStorage.setItem('gemini_api_key', e.target.value)
+                }}
+                placeholder="Gemini API key (AIza...)"
+                style={{
+                  width: '100%', paddingLeft: '26px', paddingRight: '30px',
+                  height: '30px', borderRadius: '7px', border: `1px solid ${geminiKey ? B50 : '#1C2130'}`,
+                  background: '#0C1019', color: '#D1D5DB', fontSize: '11.5px', outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <button
+                onClick={() => setShowKey(s => !s)}
+                style={{ position: 'absolute', right: '7px', background: 'none', border: 'none', cursor: 'pointer', color: '#4B5563', display: 'flex', padding: 0 }}
+              >
+                {showKey ? <EyeSlash size={13} /> : <Eye size={13} />}
+              </button>
+            </div>
+            {geminiKey && (
+              <div style={{ color: '#22C55E', fontSize: '10px', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Check size={10} weight="bold" /> Chave salva
+              </div>
+            )}
+            <div style={{ color: '#4B5563', fontSize: '10px', marginTop: '4px' }}>
+              Grátis em <span style={{ color: B }}>aistudio.google.com</span>
+            </div>
+          </div>
 
           <Divider />
           <SectionLabel title="Fundo do Chat" />
