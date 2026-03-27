@@ -6,7 +6,7 @@ import {
   User, Tag, Percent, Package, Star,
   ArrowCounterClockwise, Check, Phone, Rocket,
   Sparkle, TShirt, Flower, Lightning, CoatHanger, Diamond, Barbell, ShoppingBag,
-  ArrowsClockwise, SealPercent, GridFour,
+  ArrowsClockwise, SealPercent, GridFour, Globe, CircleNotch,
 } from '@phosphor-icons/react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
@@ -124,6 +124,38 @@ export default function ConfigPanel({
   const fileRef = useRef()
   const [tab, setTab] = useState('templates')
   const [showSettings, setShowSettings] = useState(false)
+  const [brandUrl, setBrandUrl] = useState('')
+  const [brandLoading, setBrandLoading] = useState(false)
+  const [brandError, setBrandError] = useState('')
+
+  const handleImportBrand = async () => {
+    if (!brandUrl.trim()) return
+    setBrandLoading(true)
+    setBrandError('')
+    try {
+      let url = brandUrl.trim()
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url
+      const res = await fetch(`/api/brand?url=${encodeURIComponent(url)}`)
+      const data = await res.json()
+      if (data.error) { setBrandError(data.error); return }
+
+      const updates = {}
+      if (data.brand_name) updates.name = data.brand_name
+      if (data.logos?.length) {
+        const best = data.logos.sort((a, b) => (b.width || 0) - (a.width || 0))[0]
+        if (best?.url) updates.logo = best.url
+      }
+      if (data.colors?.length) {
+        const primary = data.colors[0]
+        if (primary?.hex) updates.avatarColor = primary.hex
+      }
+      onBrandChange({ ...brand, ...updates })
+    } catch (e) {
+      setBrandError('Falha ao buscar marca')
+    } finally {
+      setBrandLoading(false)
+    }
+  }
 
   const handleLogoUpload = e => {
     const file = e.target.files[0]
@@ -189,6 +221,48 @@ export default function ConfigPanel({
       {/* ── Settings drawer ─────────────────────────────────────────────────── */}
       {showSettings && (
         <div style={{ padding: '14px 16px', background: '#090D14', borderBottom: '1px solid #151A26', overflowY: 'auto', overflowX: 'hidden' }}>
+
+          {/* Import from URL */}
+          <div style={{ marginBottom: '14px' }}>
+            <div style={{ color: '#6B7280', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+              Importar marca pelo site
+            </div>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <Globe size={13} color="#4B5563" style={{ position: 'absolute', left: '8px', pointerEvents: 'none' }} />
+                <input
+                  value={brandUrl}
+                  onChange={e => { setBrandUrl(e.target.value); setBrandError('') }}
+                  onKeyDown={e => e.key === 'Enter' && handleImportBrand()}
+                  placeholder="ex: nike.com"
+                  style={{
+                    width: '100%', paddingLeft: '26px', paddingRight: '8px',
+                    height: '30px', borderRadius: '7px', border: '1px solid #1C2130',
+                    background: '#0C1019', color: '#D1D5DB', fontSize: '11.5px', outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+              <button
+                onClick={handleImportBrand}
+                disabled={brandLoading}
+                style={{
+                  height: '30px', padding: '0 10px', borderRadius: '7px',
+                  background: B, border: 'none', cursor: brandLoading ? 'default' : 'pointer',
+                  color: 'white', fontSize: '11px', fontWeight: '600',
+                  display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0,
+                  opacity: brandLoading ? 0.7 : 1,
+                }}
+              >
+                {brandLoading
+                  ? <CircleNotch size={13} style={{ animation: 'spin 0.8s linear infinite' }} />
+                  : 'Importar'}
+              </button>
+            </div>
+            {brandError && (
+              <div style={{ color: '#EF4444', fontSize: '10.5px', marginTop: '4px' }}>{brandError}</div>
+            )}
+          </div>
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
