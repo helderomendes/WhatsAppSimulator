@@ -61,10 +61,24 @@ ${vars.discount ? `Desconto: ${vars.discount}%` : ''}
 
 Gere a conversa agora.`
 
-      const result = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: userPrompt,
-      })
+      const MODELS = [
+        'gemini-2.0-flash-lite',
+        'gemini-2.5-flash',
+        'gemini-2.0-flash-exp',
+        'gemini-1.5-flash-latest',
+        'gemini-2.5-pro',
+      ]
+      let result = null
+      let lastErr = null
+      for (const model of MODELS) {
+        try {
+          result = await ai.models.generateContent({ model, contents: userPrompt })
+          break
+        } catch (e) {
+          lastErr = e
+        }
+      }
+      if (!result) throw lastErr
 
       const raw = result.text.trim()
       // Strip markdown code blocks if present
