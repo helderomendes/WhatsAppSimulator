@@ -151,7 +151,7 @@ export default function ConfigPanel({
       }
       onBrandChange({ ...brand, ...updates })
     } catch (e) {
-      setBrandError('Falha ao buscar marca')
+      setBrandError(e.message || 'Falha ao buscar marca')
     } finally {
       setBrandLoading(false)
     }
