@@ -34,7 +34,7 @@ export default function WhatsAppChat({ messages, dark, vars, wallpaper, flat }) 
   return (
     <div
       className={flat ? 'py-2' : 'flex-1 overflow-y-auto chat-scroll py-2'}
-      style={wallpaper?.style ?? (dark ? { backgroundColor: '#0B141A' } : { backgroundColor: '#D9E5BE' })}
+      style={{ minHeight: '100%', ...(wallpaper?.style ?? (dark ? { backgroundColor: '#0B141A' } : { backgroundColor: '#D9E5BE' })) }}
     >
       {processed.map((msg) => {
         switch (msg.type) {
