@@ -110,6 +110,32 @@ function Divider() {
   return <div style={{ height: '1px', background: '#151A26', margin: '10px 0' }} />
 }
 
+// ─── Extract dominant color from image URL via Canvas ────────────────────────
+function extractDominantColor(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      const size = 32
+      const canvas = document.createElement('canvas')
+      canvas.width = size; canvas.height = size
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, size, size)
+      const { data } = ctx.getImageData(0, 0, size, size)
+      let r = 0, g = 0, b = 0, count = 0
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 128) continue // skip transparent
+        r += data[i]; g += data[i + 1]; b += data[i + 2]; count++
+      }
+      if (!count) return reject(new Error('no pixels'))
+      const toHex = v => Math.round(v / count).toString(16).padStart(2, '0')
+      resolve(`#${toHex(r)}${toHex(g)}${toHex(b)}`)
+    }
+    img.onerror = reject
+    img.src = src
+  })
+}
+
 // ─── Main export ─────────────────────────────────────────────────────────────
 export default function ConfigPanel({
   selectedSegment, onSelectSegment,
@@ -133,57 +159,25 @@ export default function ConfigPanel({
     setBrandLoading(true)
     setBrandError('')
     try {
-      let url = brandUrl.trim()
-      if (!/^https?:\/\//i.test(url)) url = 'https://' + url
-      const origin = new URL(url).origin
+      let input = brandUrl.trim()
+      if (!/^https?:\/\//i.test(input)) input = 'https://' + input
+      const domain = new URL(input).hostname.replace(/^www\./, '')
 
-      // Fetch HTML via CORS proxy — try multiple in sequence
-      const proxies = [
-        u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-        u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-        u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-      ]
-      let contents = null
-      for (const proxy of proxies) {
-        try {
-          const r = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) })
-          const body = await r.json().catch(() => r.text().then(t => ({ contents: t })))
-          contents = body?.contents ?? (typeof body === 'string' ? body : null)
-          if (contents) break
-        } catch { /* try next */ }
-      }
-      if (!contents) throw new Error('Nenhum proxy conseguiu acessar o site')
+      // Brand name: capitalize domain without TLD
+      const name = domain.split('.')[0].replace(/-/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase())
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(contents, 'text/html')
-      const meta = (name) =>
-        doc.querySelector(`meta[property="${name}"]`)?.content ||
-        doc.querySelector(`meta[name="${name}"]`)?.content || ''
+      // Logo via logo.dev (CORS-friendly, no key needed for basic use)
+      const logoUrl = `https://img.logo.dev/${domain}?format=png&size=128`
 
-      const updates = {}
+      // Extract dominant color from logo using Canvas
+      let avatarColor = null
+      try {
+        avatarColor = await extractDominantColor(logoUrl)
+      } catch { /* color optional */ }
 
-      // Brand name
-      const name = meta('og:site_name') || meta('application-name') ||
-        doc.querySelector('title')?.textContent?.split(/[|\-–]/)[0]?.trim()
-      if (name) updates.name = name
-
-      // Logo: apple-touch-icon → og:image → favicon
-      const logoHref =
-        doc.querySelector('link[rel="apple-touch-icon"]')?.href ||
-        doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.href ||
-        meta('og:image') ||
-        doc.querySelector('link[rel~="icon"]')?.href
-      if (logoHref) {
-        try {
-          updates.logo = new URL(logoHref, origin).href
-        } catch { /* ignore */ }
-      }
-
-      // Primary color: theme-color meta
-      const color = meta('theme-color') || meta('msapplication-TileColor')
-      if (color && /^#[0-9a-f]{3,8}$/i.test(color)) updates.avatarColor = color
-
-      if (!Object.keys(updates).length) throw new Error('Nenhum dado encontrado')
+      const updates = { name, logo: logoUrl }
+      if (avatarColor) updates.avatarColor = avatarColor
       onBrandChange({ ...brand, ...updates })
     } catch (e) {
       setBrandError(e.message || 'Falha ao buscar marca')
