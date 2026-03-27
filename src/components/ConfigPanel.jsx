@@ -159,35 +159,29 @@ export default function ConfigPanel({
     setBrandLoading(true)
     setBrandError('')
     try {
-      let input = brandUrl.trim()
-      if (!/^https?:\/\//i.test(input)) input = 'https://' + input
-      const domain = new URL(input).hostname.replace(/^www\./, '')
+      let url = brandUrl.trim()
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url
 
-      // Brand name from domain
-      const name = domain.split('.')[0].replace(/-/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase())
+      const res = await fetch(`/api/brand?url=${encodeURIComponent(url)}`)
+      const json = await res.json()
 
-      // Try logo sources in order — first one that loads wins
-      const candidates = [
-        `https://logo.clearbit.com/${domain}`,
-        `https://icons.duckduckgo.com/ip3/${domain}.ico`,
-        `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
-      ]
-
-      let logoUrl = null
-      let avatarColor = null
-      for (const src of candidates) {
-        try {
-          const color = await extractDominantColor(src)
-          logoUrl = src
-          avatarColor = color
-          break
-        } catch { /* try next */ }
+      if (!json.ok) {
+        setBrandError(json.error || 'Falha ao buscar marca')
+        return
       }
 
-      if (!logoUrl) throw new Error('Não foi possível carregar o logo da marca')
-
-      onBrandChange({ ...brand, name, logo: logoUrl, ...(avatarColor ? { avatarColor } : {}) })
+      const d = json.data
+      const updates = {}
+      if (d.brand_name) updates.name = d.brand_name
+      if (d.logos?.length) {
+        const best = [...d.logos].sort((a, b) => (b.width || 0) - (a.width || 0))[0]
+        if (best?.url) updates.logo = best.url
+      }
+      if (d.colors?.length) {
+        const hex = d.colors[0]?.hex
+        if (hex) updates.avatarColor = hex
+      }
+      onBrandChange({ ...brand, ...updates })
     } catch (e) {
       setBrandError(e.message || 'Falha ao buscar marca')
     } finally {
