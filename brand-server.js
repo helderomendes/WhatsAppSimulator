@@ -22,3 +22,6 @@ app.get('/api/brand', async (req, res) => {
 
 const PORT = 3001
 app.listen(PORT, () => console.log(`Brand API running on http://localhost:${PORT}`))
+
+// sharp drains the event loop after processing — keep process alive
+setInterval(() => {}, 1 << 30)
