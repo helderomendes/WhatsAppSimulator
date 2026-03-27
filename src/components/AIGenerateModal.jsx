@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Sparkle, CircleNotch, X, ArrowRight } from '@phosphor-icons/react'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 const B = '#1877F2'
 
@@ -48,10 +48,10 @@ export default function AIGenerateModal({ brand, vars, onGenerate, onClose }) {
     setError('')
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+      const ai = new GoogleGenAI({ apiKey })
 
-      const userPrompt = `
+      const userPrompt = `${SYSTEM_PROMPT}
+
 Marca: ${brand.name || 'loja'}
 Cenário: ${prompt.trim()}
 ${vars.nome ? `Nome do cliente: ${vars.nome}` : ''}
@@ -61,12 +61,12 @@ ${vars.discount ? `Desconto: ${vars.discount}%` : ''}
 
 Gere a conversa agora.`
 
-      const result = await model.generateContent([
-        { text: SYSTEM_PROMPT },
-        { text: userPrompt },
-      ])
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: userPrompt,
+      })
 
-      const raw = result.response.text().trim()
+      const raw = result.text.trim()
       // Strip markdown code blocks if present
       const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
       const messages = JSON.parse(clean)
