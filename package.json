@@ -4,9 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"node brand-server.js\" \"vite\"",
-    "dev:vite": "vite",
-    "dev:api": "node brand-server.js",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
