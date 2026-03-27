@@ -137,10 +137,22 @@ export default function ConfigPanel({
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url
       const origin = new URL(url).origin
 
-      // Fetch HTML via allorigins CORS proxy
-      const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
-      const { contents } = await proxyRes.json()
-      if (!contents) throw new Error('Site não respondeu')
+      // Fetch HTML via CORS proxy — try multiple in sequence
+      const proxies = [
+        u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+        u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+        u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+      ]
+      let contents = null
+      for (const proxy of proxies) {
+        try {
+          const r = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) })
+          const body = await r.json().catch(() => r.text().then(t => ({ contents: t })))
+          contents = body?.contents ?? (typeof body === 'string' ? body : null)
+          if (contents) break
+        } catch { /* try next */ }
+      }
+      if (!contents) throw new Error('Nenhum proxy conseguiu acessar o site')
 
       const parser = new DOMParser()
       const doc = parser.parseFromString(contents, 'text/html')
