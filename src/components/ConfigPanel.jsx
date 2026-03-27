@@ -163,22 +163,31 @@ export default function ConfigPanel({
       if (!/^https?:\/\//i.test(input)) input = 'https://' + input
       const domain = new URL(input).hostname.replace(/^www\./, '')
 
-      // Brand name: capitalize domain without TLD
+      // Brand name from domain
       const name = domain.split('.')[0].replace(/-/g, ' ')
         .replace(/\b\w/g, c => c.toUpperCase())
 
-      // Logo via logo.dev (CORS-friendly, no key needed for basic use)
-      const logoUrl = `https://img.logo.dev/${domain}?format=png&size=128`
+      // Try logo sources in order — first one that loads wins
+      const candidates = [
+        `https://logo.clearbit.com/${domain}`,
+        `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+        `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+      ]
 
-      // Extract dominant color from logo using Canvas
+      let logoUrl = null
       let avatarColor = null
-      try {
-        avatarColor = await extractDominantColor(logoUrl)
-      } catch { /* color optional */ }
+      for (const src of candidates) {
+        try {
+          const color = await extractDominantColor(src)
+          logoUrl = src
+          avatarColor = color
+          break
+        } catch { /* try next */ }
+      }
 
-      const updates = { name, logo: logoUrl }
-      if (avatarColor) updates.avatarColor = avatarColor
-      onBrandChange({ ...brand, ...updates })
+      if (!logoUrl) throw new Error('Não foi possível carregar o logo da marca')
+
+      onBrandChange({ ...brand, name, logo: logoUrl, ...(avatarColor ? { avatarColor } : {}) })
     } catch (e) {
       setBrandError(e.message || 'Falha ao buscar marca')
     } finally {
