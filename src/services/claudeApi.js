@@ -69,6 +69,34 @@ Rules:
 - For repurchase: text + carousel
 `
 
+export async function chatWithAgent(apiKey, systemPrompt, history, onChunk) {
+  const client = new Anthropic({
+    apiKey,
+    dangerouslyAllowBrowser: true,
+  })
+
+  let fullText = ''
+
+  const stream = await client.messages.stream({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1000,
+    system: systemPrompt,
+    messages: history.map(m => ({ role: m.role, content: m.content })),
+  })
+
+  for await (const event of stream) {
+    if (
+      event.type === 'content_block_delta' &&
+      event.delta.type === 'text_delta'
+    ) {
+      fullText += event.delta.text
+      onChunk?.(fullText)
+    }
+  }
+
+  return fullText
+}
+
 export async function generateConversation(apiKey, prompt, onChunk) {
   const client = new Anthropic({
     apiKey,
