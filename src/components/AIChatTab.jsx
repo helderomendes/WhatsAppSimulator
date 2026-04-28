@@ -1,24 +1,61 @@
 import { useState, useRef, useEffect } from 'react'
 import {
-  PaperPlaneTilt, Robot, ArrowLeft, Key, Eye, EyeSlash,
-  CircleNotch, ChatTeardropText, WarningCircle,
+  PaperPlaneTilt, Robot, ArrowLeft,
+  CircleNotch, ChatTeardropText, WarningCircle, Gear,
 } from '@phosphor-icons/react'
-import { chatWithAgent } from '../services/claudeApi'
+import { GoogleGenAI } from '@google/genai'
 
 const B = '#1877F2'
 const B10 = '#1877F21A'
 const B50 = '#1877F280'
+
+const MODELS = [
+  'gemini-2.0-flash-lite',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash-exp',
+  'gemini-1.5-flash-latest',
+]
 
 function getCurrentTime() {
   const now = new Date()
   return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
 }
 
+async function streamGeminiChat(apiKey, systemInstruction, history, onChunk) {
+  const ai = new GoogleGenAI({ apiKey })
+
+  // Gemini expects role 'model' instead of 'assistant'
+  const contents = history.map(m => ({
+    role: m.role === 'assistant' ? 'model' : m.role,
+    parts: [{ text: m.content }],
+  }))
+
+  let lastErr = null
+  for (const model of MODELS) {
+    try {
+      const stream = await ai.models.generateContentStream({
+        model,
+        contents,
+        config: { systemInstruction },
+      })
+      let fullText = ''
+      for await (const chunk of stream) {
+        fullText += chunk.text ?? ''
+        onChunk(fullText)
+      }
+      return fullText
+    } catch (e) {
+      lastErr = e
+    }
+  }
+  throw lastErr
+}
+
 export default function AIChatTab({ onMessagesChange, brand }) {
+  const geminiKey = localStorage.getItem('gemini_api_key') || ''
+
   const [phase, setPhase] = useState('setup')
   const [agentTheme, setAgentTheme] = useState('')
-  const [claudeKey, setClaudeKey] = useState(() => localStorage.getItem('claude_api_key') || '')
-  const [showKey, setShowKey] = useState(false)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [chatHistory, setChatHistory] = useState([])
@@ -31,8 +68,7 @@ export default function AIChatTab({ onMessagesChange, brand }) {
   }, [chatHistory, loading])
 
   const handleStart = () => {
-    if (!claudeKey.trim() || !agentTheme.trim()) return
-    localStorage.setItem('claude_api_key', claudeKey.trim())
+    if (!agentTheme.trim()) return
     onMessagesChange([
       { id: 1, type: 'separator', label: 'Hoje' },
       { id: 2, type: 'unread', count: 1 },
@@ -60,8 +96,8 @@ export default function AIChatTab({ onMessagesChange, brand }) {
     const userId = Date.now()
     const brandId = Date.now() + 1
 
-    const userMsg = { id: userId, type: 'text', from: 'user', text, time }
-    const brandMsg = { id: brandId, type: 'text', from: 'brand', text: '...', time, status: 'delivered' }
+    const userMsg  = { id: userId,  type: 'text', from: 'user',  text, time }
+    const brandMsg = { id: brandId, type: 'text', from: 'brand', text: '…', time, status: 'delivered' }
 
     const newHistory = [...chatHistory, { role: 'user', content: text }]
     setChatHistory(newHistory)
@@ -70,7 +106,7 @@ export default function AIChatTab({ onMessagesChange, brand }) {
 
     try {
       let fullResponse = ''
-      await chatWithAgent(claudeKey, agentTheme, newHistory, (chunk) => {
+      await streamGeminiChat(geminiKey, agentTheme, newHistory, (chunk) => {
         fullResponse = chunk
         onMessagesChange(prev =>
           prev.map(m => m.id === brandId ? { ...m, text: chunk } : m)
@@ -78,7 +114,8 @@ export default function AIChatTab({ onMessagesChange, brand }) {
       })
       setChatHistory(h => [...h, { role: 'assistant', content: fullResponse }])
     } catch (e) {
-      setError(e.message || 'Erro ao conectar com a IA')
+      const msg = e.message?.includes('API_KEY') ? 'Chave Gemini inválida' : (e.message || 'Erro ao conectar com a IA')
+      setError(msg)
       onMessagesChange(prev => prev.filter(m => m.id !== brandId))
       setChatHistory(h => h.slice(0, -1))
     } finally {
@@ -96,48 +133,44 @@ export default function AIChatTab({ onMessagesChange, brand }) {
 
   // ── Setup phase ─────────────────────────────────────────────────────────────
   if (phase === 'setup') {
-    const ready = claudeKey.trim() && agentTheme.trim()
+    const ready = !!geminiKey && agentTheme.trim().length > 0
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px', background: B10, borderRadius: '10px', border: `1px solid ${B50}` }}>
           <Robot size={20} weight="fill" color={B} style={{ flexShrink: 0, marginTop: '1px' }} />
           <div style={{ color: '#9CA3AF', fontSize: '11.5px', lineHeight: '1.6' }}>
-            Configure um agente de IA e converse com ele diretamente no simulador. Cada mensagem aparece no mockup em tempo real.
+            Defina a persona do agente e converse com ele ao vivo — cada mensagem aparece no mockup em tempo real.
           </div>
         </div>
 
-        {/* Claude API Key */}
-        <div>
-          <div style={{ color: '#4B5563', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
-            Chave da API Claude
+        {/* Gemini key status */}
+        {!geminiKey ? (
+          <div style={{
+            display: 'flex', alignItems: 'flex-start', gap: '8px',
+            padding: '10px 12px', background: '#1A0E00', borderRadius: '9px',
+            border: '1px solid #F59E0B40',
+          }}>
+            <WarningCircle size={14} color="#F59E0B" style={{ flexShrink: 0, marginTop: '1px' }} />
+            <div style={{ color: '#D1D5DB', fontSize: '11.5px', lineHeight: '1.5' }}>
+              Nenhuma chave Gemini configurada.{' '}
+              <span style={{ color: '#F59E0B', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                <Gear size={11} />Configure nas Settings
+              </span>{' '}
+              (ícone de engrenagem no topo).
+            </div>
           </div>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <Key size={13} color="#4B5563" style={{ position: 'absolute', left: '9px', pointerEvents: 'none' }} />
-            <input
-              type={showKey ? 'text' : 'password'}
-              value={claudeKey}
-              onChange={e => setClaudeKey(e.target.value)}
-              placeholder="sk-ant-..."
-              style={{
-                width: '100%', paddingLeft: '28px', paddingRight: '32px',
-                height: '32px', borderRadius: '8px',
-                border: `1px solid ${claudeKey ? B50 : '#1C2130'}`,
-                background: '#0F131C', color: '#D1D5DB', fontSize: '12px',
-                outline: 'none', boxSizing: 'border-box',
-              }}
-            />
-            <button
-              onClick={() => setShowKey(s => !s)}
-              style={{ position: 'absolute', right: '8px', background: 'none', border: 'none', cursor: 'pointer', color: '#4B5563', display: 'flex', padding: 0 }}
-            >
-              {showKey ? <EyeSlash size={13} /> : <Eye size={13} />}
-            </button>
+        ) : (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '7px',
+            padding: '7px 10px', background: '#0A1A0A', borderRadius: '8px',
+            border: '1px solid #22C55E40',
+          }}>
+            <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22C55E', flexShrink: 0 }} />
+            <span style={{ color: '#22C55E', fontSize: '11px' }}>Gemini conectado</span>
           </div>
-          <div style={{ color: '#374151', fontSize: '10px', marginTop: '4px' }}>
-            Obtenha em <span style={{ color: B }}>console.anthropic.com</span>
-          </div>
-        </div>
+        )}
 
         {/* Agent theme */}
         <div>
@@ -232,13 +265,7 @@ export default function AIChatTab({ onMessagesChange, brand }) {
           </div>
         )}
         {chatHistory.map((msg, i) => (
-          <div
-            key={i}
-            style={{
-              display: 'flex',
-              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-            }}
-          >
+          <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
             <div style={{
               maxWidth: '85%', padding: '7px 10px', borderRadius: '10px',
               fontSize: '11.5px', lineHeight: '1.5',
