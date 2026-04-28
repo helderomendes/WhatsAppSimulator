@@ -10,10 +10,10 @@ const B10 = '#1877F21A'
 const B50 = '#1877F280'
 
 const MODELS = [
+  'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
+  'gemini-1.5-flash',
   'gemini-2.5-flash',
-  'gemini-2.0-flash-exp',
-  'gemini-1.5-flash-latest',
 ]
 
 function getCurrentTime() {
@@ -24,20 +24,26 @@ function getCurrentTime() {
 async function streamGeminiChat(apiKey, systemInstruction, history, onChunk) {
   const ai = new GoogleGenAI({ apiKey })
 
-  // Gemini expects role 'model' instead of 'assistant'
-  const contents = history.map(m => ({
-    role: m.role === 'assistant' ? 'model' : m.role,
+  // history tem todos os turns exceto o último (user) que acabou de ser adicionado.
+  // O último item é a mensagem atual do usuário — enviamos via sendMessageStream.
+  const pastTurns = history.slice(0, -1)
+  const currentMessage = history[history.length - 1].content
+
+  const chatHistory = pastTurns.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }))
 
   let lastErr = null
   for (const model of MODELS) {
     try {
-      const stream = await ai.models.generateContentStream({
+      const chat = ai.chats.create({
         model,
-        contents,
         config: { systemInstruction },
+        history: chatHistory,
       })
+
+      const stream = await chat.sendMessageStream({ message: currentMessage })
       let fullText = ''
       for await (const chunk of stream) {
         fullText += chunk.text ?? ''
