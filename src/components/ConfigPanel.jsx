@@ -7,12 +7,14 @@ import {
   ArrowCounterClockwise, Check, Phone, Rocket,
   Sparkle, TShirt, Flower, Lightning, CoatHanger, Diamond, Barbell, ShoppingBag,
   ArrowsClockwise, SealPercent, GridFour, Globe, CircleNotch, Key, Eye, EyeSlash,
+  Robot,
 } from '@phosphor-icons/react'
 import { SEGMENTS } from '../data/segments'
 import { TYPES } from '../data/templates'
 import MessageEditor from './MessageEditor'
 import CustomTemplatesTab from './CustomTemplatesTab'
 import AIGenerateModal from './AIGenerateModal'
+import AIChatTab from './AIChatTab'
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const B   = '#1877F2'        // Meta blue — single accent
@@ -458,10 +460,17 @@ export default function ConfigPanel({
         <TabBtn id="templates" label="Templates" icon={<SquaresFour  size={13} weight={tab==='templates'?'fill':'regular'} />} />
         <TabBtn id="editor"    label="Editor"    icon={<PencilSimple size={13} weight={tab==='editor'   ?'fill':'regular'} />} />
         <TabBtn id="saved"     label="Salvos"    icon={<BookmarkSimple size={13} weight={tab==='saved'  ?'fill':'regular'} />} badge={customTemplates?.length||null} />
+        <TabBtn id="agent"     label="Agente"    icon={<Robot          size={13} weight={tab==='agent'  ?'fill':'regular'} />} />
       </div>
 
       {/* ── Tab content ─────────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto config-scroll" style={{ padding: '16px', overflowX: 'hidden', minWidth: 0 }}>
+      <div
+        className={tab === 'agent' ? 'flex-1' : 'flex-1 overflow-y-auto config-scroll'}
+        style={{
+          padding: '16px', overflowX: 'hidden', minWidth: 0,
+          ...(tab === 'agent' ? { overflow: 'hidden', display: 'flex', flexDirection: 'column' } : {}),
+        }}
+      >
 
         {/* TEMPLATES */}
         {tab === 'templates' && (
@@ -572,6 +581,13 @@ export default function ConfigPanel({
             onSave={onSaveCustomTemplate}
             onLoad={onLoadCustomTemplate}
             onDelete={onDeleteCustomTemplate}
+          />
+        )}
+
+        {tab === 'agent' && (
+          <AIChatTab
+            onMessagesChange={onMessagesChange}
+            brand={brand}
           />
         )}
       </div>
